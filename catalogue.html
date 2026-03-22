@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pet Catalogue Brochure</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="home.php">Home</a><a href="register.html">Register</a><a href="login.html">Login</a><a href="catalogue.html">Catalogue</a><a href="feedback.html">Feedback</a>
+    </div>
+
+    <div class="hero">
+        <h1 class="cat-header">Pet Brochure & Information Centre</h1>
+        <p class="center" style="color: Purple;"><b>Expert help is just a call away!</b></p>
+
+        <div class="btn-group">
+            <div class="btn-container">
+                <button class="animal-btn" onclick="show('dog')">Dogs</button>
+                <span class="helpline">Expert: 9876543210</span>
+            </div>
+            <div class="btn-container">
+                <button class="animal-btn" onclick="show('cat')">Cats</button>
+                <span class="helpline">Expert: 8765432109</span>
+            </div>
+            <div class="btn-container">
+                <button class="animal-btn" onclick="show('bird')">Birds</button>
+                <span class="helpline">Expert: 7654321098</span>
+            </div>
+            <div class="btn-container">
+                <button class="animal-btn" onclick="show('fish')">Fish</button>
+                <span class="helpline">Expert: 6543210987</span>
+            </div>
+            <div class="btn-container">
+                <button class="animal-btn" onclick="show('hamster')">Hamsters</button>
+                <span class="helpline">Expert: 5432109876</span>
+            </div>
+            <div class="btn-container">
+                <button class="animal-btn" onclick="show('tortoise')">Tortoise</button>
+                <span class="helpline">Expert: 4321098765</span>
+            </div>
+            <div class="btn-container">
+                <button class="animal-btn" onclick="show('rabbit')">Rabbits</button>
+                <span class="helpline">Expert: 3210987654</span>
+            </div>
+            <div class="btn-container">
+                <button class="animal-btn" onclick="show('guinea')">Guinea Pigs</button>
+                <span class="helpline">Expert: 2109876543</span>
+            </div>
+        </div>
+
+        <div id="displayArea" class="scroll-container" style="display:none;"></div>
+        <div id="introText" class="center" style="margin-top: 50px;"><p style="color:Orange;">Select an animal to see information.</p></div>
+    </div>
+
+    <script>
+    const pets = {
+        dog: [
+            { n: "Golden Retriever", fav: true, why: "Very Loyal", f: "Chicken", a: "Chocolate", d: "10%" },
+            { n: "German Shepherd", fav: false, why: "Smart Guard", f: "Meat", a: "Corn", d: "5%" },
+            { n: "Labrador", fav: false, why: "Friendly", f: "Fish", a: "Dairy", d: "None" },
+            { n: "Beagle", fav: false, why: "Active", f: "Veg", a: "Grains", d: "15%" }
+        ],
+        cat: [
+            { n: "Persian Cat", fav: true, why: "Elegant", f: "Fish", a: "Lactose", d: "10%" },
+            { n: "Siamese", fav: false, why: "Social", f: "Poultry", a: "Gluten", d: "None" },
+            { n: "Maine Coon", fav: false, why: "Large", f: "Meat", a: "Seafood", d: "5%" },
+            { n: "Bengal", fav: false, why: "Energetic", f: "Raw", a: "Soy", d: "None" }
+        ],
+        bird: [
+            { n: "Parrot", fav: true, why: "Talks", f: "Fruit", a: "Avocado", d: "10%" },
+            { n: "Cockatiel", fav: false, why: "Whistles", f: "Seeds", a: "Caffeine", d: "5%" },
+            { n: "Canary", fav: false, why: "Sings", f: "Millets", a: "Salt", d: "None" },
+            { n: "Lovebird", fav: false, why: "Bonded", f: "Grains", a: "Chocolate", d: "None" }
+        ],
+        fish: [
+            { n: "Goldfish", fav: true, why: "Hardy", f: "Flakes", a: "Copper", d: "20%" },
+            { n: "Betta", fav: false, why: "Vibrant", f: "Worms", a: "Cold", d: "None" },
+            { n: "Guppy", fav: false, why: "Active", f: "Pellets", a: "Nitrate", d: "10%" },
+            { n: "Angelfish", fav: false, why: "Elegant", f: "Shrimp", a: "Chlorine", d: "None" }
+        ],
+        hamster: [
+            { n: "Syrian", fav: true, why: "Friendly", f: "Nuts", a: "Almonds", d: "10%" },
+            { n: "Roborovski", fav: false, why: "Fast", f: "Seeds", a: "Citrus", d: "None" },
+            { n: "Dwarf", fav: false, why: "Social", f: "Grains", a: "Sugar", d: "5%" },
+            { n: "Chinese", fav: false, why: "Calm", f: "Veg", a: "Onion", d: "None" }
+        ],
+        tortoise: [
+            { n: "Sulcata", fav: true, why: "Lifelong", f: "Hay", a: "Sugar", d: "None" },
+            { n: "Russian", fav: false, why: "Active", f: "Greens", a: "Dog Food", d: "10%" },
+            { n: "Indian Star", fav: false, why: "Pretty", f: "Cactus", a: "Protein", d: "None" },
+            { n: "Red-Foot", fav: false, why: "Curious", f: "Fruit", a: "Cold", d: "5%" }
+        ],
+        rabbit: [
+            { n: "Holland Lop", fav: false, why: "Cute Ears", f: "Hay", a: "Lettuce", d: "10%" },
+            { n: "Mini Rex", fav: false, why: "Velvet Fur", f: "Pellets", a: "Cabbage", d: "5%" }
+        ],
+        guinea: [
+            { n: "Abyssinian", fav: false, why: "Unique", f: "Peppers", a: "Potato", d: "15%" },
+            { n: "American", fav: false, why: "Sweet", f: "Hay", a: "Nuts", d: "None" }
+        ]
+    };
+
+    function show(type) {
+        const area = document.getElementById('displayArea');
+        const intro = document.getElementById('introText');
+        area.innerHTML = ''; area.style.display = 'flex'; intro.style.display = 'none';
+        pets[type].forEach(p => {
+            let badge = p.fav ? '<div class="hot-badge">★ HOT FAVORITE</div>' : '';
+            area.innerHTML += `<div class="breed-card">${badge}<span class="breed-name">${p.n}</span><div class="card-info"><p><b>Why:</b> ${p.why}</p><p><b>Food:</b> ${p.f}</p><p><b>Allergies:</b> ${p.a}</p><p><b>Discount:</b> ${p.d}</p></div></div>`;
+        });
+    }
+    </script>
+</body>
+</html>

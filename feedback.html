@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pet Adoption Feedback</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="home.php">Home</a><a href="register.html">Register</a><a href="login.html">Login</a><a href="catalogue.html">Catalogue</a><a href="feedback.html">Feedback</a>
+    </div>
+
+    <div class="fb-container">
+        <h2 class="center" style="color:Purple;">Help Us Improve!</h2>
+        <form action="feedback.php" method="POST">
+            <div class="form-group" style="margin-bottom:20px;">
+                <label>Enter Registered Email*</label>
+                <input type="email" name="user_email" required placeholder="To verify your feedback">
+            </div>
+
+            <script>
+                const traits = ["Pet Health Quality", "Delivery Timeliness", "Staff Behavior", "App Ease of Use", "Pet Vaccination Status", "Price Fairness", "Expert Consultation"];
+                const colors = ['v', 'i', 'b', 'g', 'y', 'o', 'r'];
+                
+                traits.forEach((trait, index) => {
+                    document.write(`<div class="rating-row">
+                        <span style="width:180px; font-weight:bold; color:Purple;">${trait}</span>
+                        <div style="display:flex; gap:5px;">`);
+                    for(let s=1; s<=7; s++) {
+                        document.write(`
+                            <div class="star-box ${colors[s-1]}">
+                                <label>${s} ★</label>
+                                <input type="radio" name="rate${index}" value="${s}">
+                            </div>`);
+                    }
+                    document.write(`</div></div>`);
+                });
+            </script>
+
+            <label>Additional Improvisations / Suggestions:</label>
+            <textarea name="comments" class="feedback-msg" placeholder="Tell us more..."></textarea>
+            
+            <button type="submit" class="reg-btn">Submit Feedback</button>
+        </form>
+    </div>
+</body>
+</html> 
+

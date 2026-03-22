@@ -1,23 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
+    <title>Register - Pet Adoption</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="form-container">
-    <h2>Register</h2>
-    
-    <input type="text" placeholder="Full Name">
-    <input type="email" placeholder="Email">
-    <input type="text" placeholder="Phone Number">
-    <input type="password" placeholder="Password">
-    
-    <button>Register</button>
-
-    <p>Already have an account? <a href="login.html">Login</a></p>
-</div>
-
+    <div class="navbar"><a href="home.php">Home</a><a href="register.html">Register</a><a href="login.html">Login</a><a href="catalogue.php">Catalogue</a><a href="feedback.html">Feedback</a></div>
+    <div class="registration-container">
+        <h2 class="center" style="color:Purple">User Registration</h2>
+        <div id="errorBox" class="error-message"></div>
+        <form id="regForm" action="register.php" method="POST">
+            <div class="form-row">
+                <div class="form-group"><label>Full Name*</label><input type="text" id="fullname" name="fullname"></div>
+                <div class="form-group"><label>Email*</label><input type="email" id="email" name="email"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Flat No*</label><input type="text" id="flat" name="flat"></div>
+                <div class="form-group"><label>Building*</label><input type="text" id="building" name="building"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Pincode* (6 Digits)</label><input type="text" id="pincode" name="pincode" maxlength="6"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Password*</label>
+                    <input type="password" name="pass" id="pass" oninput="checkStrength(this.value)">
+                    <div class="show-pass"><input type="checkbox" onclick="toggle('pass')"> Show Password</div>
+                    <span id="sm" class="strength-text"></span>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password*</label>
+                    <input type="password" id="cpass">
+                    <div class="show-pass"><input type="checkbox" onclick="toggle('cpass')"> Show Password</div>
+                </div>
+            </div>
+            <button type="submit" class="reg-btn">Complete Registration</button>
+        </form>
+    </div>
+    <script>
+    function toggle(id) { let x = document.getElementById(id); x.type = (x.type === "password") ? "text" : "password"; }
+    function checkStrength(p) {
+        let m = document.getElementById('sm');
+        let strong = /[A-Z]/.test(p) && /[0-9]/.test(p) && /[!@#$%^&*]/.test(p);
+        let mid = /[A-Z]/.test(p) && /[0-9]/.test(p);
+        if (p.length >= 8 && strong) { m.innerText = "Strong"; m.style.color = "Green"; }
+        else if (p.length >= 6 && mid) { m.innerText = "Medium"; m.style.color = "Orange"; }
+        else { m.innerText = "Weak"; m.style.color = "Red"; }
+    }
+    document.getElementById('regForm').onsubmit = function(e) {
+        let err = document.getElementById('errorBox');
+        let f = [
+            {id:'fullname', m:'Enter Name'}, {id:'pincode', m:'Pin must be 6 digits', v: x => x.length === 6},
+            {id:'pass', m:'Pass must be 8+ chars', v: x => x.length >= 8},
+            {id:'cpass', m:'Passwords Match Error', v: x => x === document.getElementById('pass').value}
+        ];
+        for (let i of f) {
+            let val = document.getElementById(i.id).value;
+            if (!val || (i.v && !i.v(val))) {
+                e.preventDefault(); err.innerText = i.m; err.style.display='block';
+                document.getElementById(i.id).focus(); return false;
+            }
+        }
+    };
+    </script>
 </body>
 </html>
