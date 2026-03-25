@@ -1,115 +1,122 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Pet Catalogue Brochure</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue - PawHome</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="home.php">Home</a><a href="register.html">Register</a><a href="login.html">Login</a><a href="catalogue.html">Catalogue</a><a href="feedback.html">Feedback</a>
-    </div>
 
-    <div class="hero">
-        <h1 class="cat-header">Pet Brochure & Information Centre</h1>
-        <p class="center" style="color: Purple;"><b>Expert help is just a call away!</b></p>
+<nav class="navbar">
+<a href="home.html" class="brand">🐾 PawHome</a>
+<a href="home.html">Home</a>
+<a href="register.html">Register</a>
+<a href="login.html">Login</a>
+<a href="catalogue.html" class="active">Catalogue</a>
+<a href="feedback.html">Feedback</a>
+</nav>
 
-        <div class="btn-group">
-            <div class="btn-container">
-                <button class="animal-btn" onclick="show('dog')">Dogs</button>
-                <span class="helpline">Expert: 9876543210</span>
-            </div>
-            <div class="btn-container">
-                <button class="animal-btn" onclick="show('cat')">Cats</button>
-                <span class="helpline">Expert: 8765432109</span>
-            </div>
-            <div class="btn-container">
-                <button class="animal-btn" onclick="show('bird')">Birds</button>
-                <span class="helpline">Expert: 7654321098</span>
-            </div>
-            <div class="btn-container">
-                <button class="animal-btn" onclick="show('fish')">Fish</button>
-                <span class="helpline">Expert: 6543210987</span>
-            </div>
-            <div class="btn-container">
-                <button class="animal-btn" onclick="show('hamster')">Hamsters</button>
-                <span class="helpline">Expert: 5432109876</span>
-            </div>
-            <div class="btn-container">
-                <button class="animal-btn" onclick="show('tortoise')">Tortoise</button>
-                <span class="helpline">Expert: 4321098765</span>
-            </div>
-            <div class="btn-container">
-                <button class="animal-btn" onclick="show('rabbit')">Rabbits</button>
-                <span class="helpline">Expert: 3210987654</span>
-            </div>
-            <div class="btn-container">
-                <button class="animal-btn" onclick="show('guinea')">Guinea Pigs</button>
-                <span class="helpline">Expert: 2109876543</span>
-            </div>
+<div style="display:flex; gap:1rem; padding:1rem;">
+
+<div style="width:220px;background:lightblue;padding:1rem;min-height:80vh; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+<h3 style="margin-bottom:1rem;color:darkgreen;">🐾 Pets</h3>
+<div onclick="showType('home')" style="cursor:pointer;margin:10px 0;padding:10px;border-radius:8px;background:white;transition:0.2s;" class="filter-item active">🏠 Home</div>
+<div onclick="showType('dog')" style="cursor:pointer;margin:10px 0;padding:10px;border-radius:8px;background:white;transition:0.2s;" class="filter-item">🐶 Dogs</div>
+<div onclick="showType('cat')" style="cursor:pointer;margin:10px 0;padding:10px;border-radius:8px;background:white;transition:0.2s;" class="filter-item">🐱 Cats</div>
+<div onclick="showType('rabbit')" style="cursor:pointer;margin:10px 0;padding:10px;border-radius:8px;background:white;transition:0.2s;" class="filter-item">🐰 Rabbits</div>
+<div onclick="showType('bird')" style="cursor:pointer;margin:10px 0;padding:10px;border-radius:8px;background:white;transition:0.2s;" class="filter-item">🦜 Birds</div>
+</div>
+
+<div style="flex:1;padding:2rem; max-width:100%;">
+
+<div id="homePage">
+<h1 style="color:darkgreen;margin-bottom:1rem;">Welcome to our Catalogue 🐾</h1>
+<p style="color:gray;font-size:1.1rem;">Choose from sidebar what pet information you want to see. Each pet has complete details!</p>
+</div>
+
+<div id="content" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;"></div>
+
+</div>
+</div>
+
+<style>
+.filter-item:hover {background:#e8f5e8;}
+.filter-item.active {background:darkgreen;color:white;}
+.pet-card {border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);transition:0.3s;}
+.pet-card:hover {transform:translateY(-5px);box-shadow:0 8px 25px rgba(0,0,0,0.15);}
+.pet-card img {width:100%;height:220px;object-fit:cover;}
+.pet-card-body {padding:1.2rem;}
+.pet-name {font-size:1.3rem;color:darkgreen;margin-bottom:0.5rem;}
+.pet-details {line-height:1.6;color:#555;}
+.offer {background:lightgreen;padding:4px 12px;border-radius:20px;font-weight:500;color:darkgreen;margin:0.5rem 0;}
+</style>
+
+<script>
+const animals = [
+  {type:'dog',name:'Bruno',img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=500&fit=crop',desc:'Very friendly Golden Retriever puppy. Perfect family pet.',food:'Chicken rice mix',allergy:'Dust allergy',offer:'10% adoption discount',expert:'98765432',video:'https://youtube.com/watch?v=1'},
+  {type:'dog',name:'Max',img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&fit=crop',desc:'Active Labrador ready for adventures.',food:'Dry kibble',allergy:'None',offer:'Free food card',expert:'87654321',video:'https://youtube.com/watch?v=2'},
+  {type:'dog',name:'Rocky',img:'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=500&fit=crop',desc:'Strong German Shepherd, great guard dog.',food:'Meat based',allergy:'None',offer:'Special price',expert:'76543210',video:'https://youtube.com/watch?v=3'},
+  {type:'dog',name:'Bella',img:'https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=500&fit=crop',desc:'Playful Beagle loves to play fetch.',food:'Veg mix',allergy:'Heat sensitive',offer:'Free toy included',expert:'65432109',video:'https://youtube.com/watch?v=4'},
+  
+  {type:'cat',name:'Luna',img:'https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=500&fit=crop',desc:'Calm Persian cat perfect for apartments.',food:'Fish based',allergy:'Milk allergy',offer:'Ready for home',expert:'54321098',video:'https://youtube.com/watch?v=5'},
+  {type:'cat',name:'Tiger',img:'https://images.unsplash.com/photo-1555685812-4b8f286fd0f0?w=500&fit=crop',desc:'Smart Siamese cat very social.',food:'Chicken',allergy:'None',offer:'10% discount',expert:'43210987',video:'https://youtube.com/watch?v=6'},
+  {type:'cat',name:'Milo',img:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&fit=crop',desc:'Cute tabby kitten loves cuddles.',food:'Fish',allergy:'Dust',offer:'Coming soon',expert:'32109876',video:'https://youtube.com/watch?v=7'},
+  {type:'cat',name:'Simba',img:'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500&fit=crop',desc:'Lazy British Shorthair perfect lap cat.',food:'Milk formula',allergy:'Cold',offer:'Free food starter',expert:'21098765',video:'https://youtube.com/watch?v=8'},
+  
+{type:'rabbit',name:'Coco',img:'https://images.unsplash.com/photo-1574410466976-b2661e95637b?w=500&fit=crop&q=85',desc:'Cute fluffy rabbit loves carrots.',food:'Fresh carrots',allergy:'Heat',offer:'Ready',expert:'10987654',video:'https://youtube.com/watch?v=9'},
+  {type:'rabbit',name:'Snowy',img:'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=500&fit=crop&q=85',desc:'Soft white rabbit very gentle.',food:'Leafy greens',allergy:'None',offer:'Free hutch toy',expert:'19876543',video:'https://youtube.com/watch?v=10'},
+  {type:'rabbit',name:'Bunny',img:'https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=500&fit=crop&q=85',desc:'Jumping Dutch rabbit energetic.',food:'Veggies',allergy:'Dust',offer:'Ready',expert:'28765432',video:'https://youtube.com/watch?v=11'},
+  {type:'rabbit',name:'Fluffy',img:'https://images.unsplash.com/photo-1597345637960-95e29f55e3f0?w=500&fit=crop&q=85',desc:'Fluffy Lionhead super cute.',food:'Grass hay',allergy:'None',offer:'10% off',expert:'37654321',video:'https://youtube.com/watch?v=12'},
+  
+  {type:'bird',name:'Rio',img:'https://images.unsplash.com/photo-1591198936750-16d8e15edb9e?w=500&fit=crop',desc:'Talking parrot very intelligent.',food:'Seeds mix',allergy:'Cold',offer:'Free cage toy',expert:'46543210',video:'https://youtube.com/watch?v=13'},
+  {type:'bird',name:'Tweety',img:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=500&fit=crop',desc:'Happy budgie loves to sing.',food:'Seeds',allergy:'Heat',offer:'Ready',expert:'55432109',video:'https://youtube.com/watch?v=14'},
+  {type:'bird',name:'Sky',img:'https://images.unsplash.com/photo-1501706362039-c6e80948bb5c?w=500&fit=crop',desc:'Colorful cockatiel friendly.',food:'Fruits seeds',allergy:'None',offer:'10% discount',expert:'64321098',video:'https://youtube.com/watch?v=15'},
+  {type:'bird',name:'Sunny',img:'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=500&fit=crop',desc:'Bright lovebird cheerful.',food:'Seeds fruits',allergy:'None',offer:'Ready for family',expert:'73210987',video:'https://youtube.com/watch?v=16'}
+];
+
+function showType(type){
+  document.getElementById('homePage').style.display = type === 'home' ? 'block' : 'none';
+  const container = document.getElementById('content');
+  
+
+  document.querySelectorAll('.filter-item').forEach(item => item.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  if(type==='home'){
+    container.innerHTML = '';
+    return;
+  }
+
+  const iconMap = {
+    'dog': '🐶',
+    'cat': '🐱', 
+    'rabbit': '🐰',
+    'bird': '🦜'
+  };
+  const icon = iconMap[type] || '🐾';
+
+  const list = animals.filter(a=>a.type===type);
+  container.innerHTML = list.map(a => `
+    <div class="pet-card">
+      <img src="${a.img}" alt="${a.name}" loading="lazy">
+      <div class="pet-card-body">
+        <h3 class="pet-name">${icon} ${a.name}</h3>
+        <div class="pet-details">
+          <p>${a.desc}</p>
+          <div class="offer">${a.offer}</div>
+          <p><strong>Food:</strong> ${a.food}</p>
+          <p><strong>Allergy:</strong> ${a.allergy}</p>
+          <p><strong>Expert:</strong> ${a.expert}</p>
+          <a href="${a.video}" target="_blank" style="margin-top:8px;display:inline-block;">📺 Video</a>
         </div>
-
-        <div id="displayArea" class="scroll-container" style="display:none;"></div>
-        <div id="introText" class="center" style="margin-top: 50px;"><p style="color:Orange;">Select an animal to see information.</p></div>
+      </div>
     </div>
+  `).join('');
+}
 
-    <script>
-    const pets = {
-        dog: [
-            { n: "Golden Retriever", fav: true, why: "Very Loyal", f: "Chicken", a: "Chocolate", d: "10%" },
-            { n: "German Shepherd", fav: false, why: "Smart Guard", f: "Meat", a: "Corn", d: "5%" },
-            { n: "Labrador", fav: false, why: "Friendly", f: "Fish", a: "Dairy", d: "None" },
-            { n: "Beagle", fav: false, why: "Active", f: "Veg", a: "Grains", d: "15%" }
-        ],
-        cat: [
-            { n: "Persian Cat", fav: true, why: "Elegant", f: "Fish", a: "Lactose", d: "10%" },
-            { n: "Siamese", fav: false, why: "Social", f: "Poultry", a: "Gluten", d: "None" },
-            { n: "Maine Coon", fav: false, why: "Large", f: "Meat", a: "Seafood", d: "5%" },
-            { n: "Bengal", fav: false, why: "Energetic", f: "Raw", a: "Soy", d: "None" }
-        ],
-        bird: [
-            { n: "Parrot", fav: true, why: "Talks", f: "Fruit", a: "Avocado", d: "10%" },
-            { n: "Cockatiel", fav: false, why: "Whistles", f: "Seeds", a: "Caffeine", d: "5%" },
-            { n: "Canary", fav: false, why: "Sings", f: "Millets", a: "Salt", d: "None" },
-            { n: "Lovebird", fav: false, why: "Bonded", f: "Grains", a: "Chocolate", d: "None" }
-        ],
-        fish: [
-            { n: "Goldfish", fav: true, why: "Hardy", f: "Flakes", a: "Copper", d: "20%" },
-            { n: "Betta", fav: false, why: "Vibrant", f: "Worms", a: "Cold", d: "None" },
-            { n: "Guppy", fav: false, why: "Active", f: "Pellets", a: "Nitrate", d: "10%" },
-            { n: "Angelfish", fav: false, why: "Elegant", f: "Shrimp", a: "Chlorine", d: "None" }
-        ],
-        hamster: [
-            { n: "Syrian", fav: true, why: "Friendly", f: "Nuts", a: "Almonds", d: "10%" },
-            { n: "Roborovski", fav: false, why: "Fast", f: "Seeds", a: "Citrus", d: "None" },
-            { n: "Dwarf", fav: false, why: "Social", f: "Grains", a: "Sugar", d: "5%" },
-            { n: "Chinese", fav: false, why: "Calm", f: "Veg", a: "Onion", d: "None" }
-        ],
-        tortoise: [
-            { n: "Sulcata", fav: true, why: "Lifelong", f: "Hay", a: "Sugar", d: "None" },
-            { n: "Russian", fav: false, why: "Active", f: "Greens", a: "Dog Food", d: "10%" },
-            { n: "Indian Star", fav: false, why: "Pretty", f: "Cactus", a: "Protein", d: "None" },
-            { n: "Red-Foot", fav: false, why: "Curious", f: "Fruit", a: "Cold", d: "5%" }
-        ],
-        rabbit: [
-            { n: "Holland Lop", fav: false, why: "Cute Ears", f: "Hay", a: "Lettuce", d: "10%" },
-            { n: "Mini Rex", fav: false, why: "Velvet Fur", f: "Pellets", a: "Cabbage", d: "5%" }
-        ],
-        guinea: [
-            { n: "Abyssinian", fav: false, why: "Unique", f: "Peppers", a: "Potato", d: "15%" },
-            { n: "American", fav: false, why: "Sweet", f: "Hay", a: "Nuts", d: "None" }
-        ]
-    };
+showType('home');
+</script>
 
-    function show(type) {
-        const area = document.getElementById('displayArea');
-        const intro = document.getElementById('introText');
-        area.innerHTML = ''; area.style.display = 'flex'; intro.style.display = 'none';
-        pets[type].forEach(p => {
-            let badge = p.fav ? '<div class="hot-badge">★ HOT FAVORITE</div>' : '';
-            area.innerHTML += `<div class="breed-card">${badge}<span class="breed-name">${p.n}</span><div class="card-info"><p><b>Why:</b> ${p.why}</p><p><b>Food:</b> ${p.f}</p><p><b>Allergies:</b> ${p.a}</p><p><b>Discount:</b> ${p.d}</p></div></div>`;
-        });
-    }
-    </script>
 </body>
 </html>

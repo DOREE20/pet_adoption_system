@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Shopping PawsHome</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="home.html" class="brand">🐾 PawHome</a>
+  <a href="home.html">Home</a>
+  <a href="catalogue.html">Catalogue</a>
+  <a href="shopping.html" class="active">Shopping</a>
+  <a href="playtime.html">Playtime</a>
+  <a href="pest.html">Pest Control</a>
+  <a href="feedback.html">Feedback</a>
+  <span class="welcome-msg hidden" id="welcome-msg"></span>
+  <a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+  <a href="register.html" id="navRegister" class="hidden">Register</a>
+  <a href="login.html" id="navLogin" class="hidden">Login</a>
+  <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div class="section-wrap">
+<h1 class="section-title">Pet Shopping</h1>
+<p class="section-sub">Choose pet type then breed</p>
+
+<div id="step1">
+<h3>Step 1 Choose Pet Type</h3>
+
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;max-width:900px">
+<div class="pet-type-card" onclick="selectPetType('dog')"><div class="pt-label">Dog</div></div>
+<div class="pet-type-card" onclick="selectPetType('cat')"><div class="pt-label">Cat</div></div>
+<div class="pet-type-card" onclick="selectPetType('rabbit')"><div class="pt-label">Rabbit</div></div>
+<div class="pet-type-card" onclick="selectPetType('bird')"><div class="pt-label">Bird</div></div>
+<div class="pet-type-card" onclick="selectPetType('fish')"><div class="pt-label">Fish</div></div>
+</div>
+</div>
+
+<div id="step2" class="hidden" style="margin-top:2rem">
+<button class="btn btn-outline" onclick="goBack()">Back</button>
+<h3 id="step2-title">Choose Breed</h3>
+<div class="shop-grid" id="breedGrid"></div>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+<p>Made by PawsHome Every pet deserves a home</p>
+</footer>
+
+<script src="app.js"></script>
+
+<script>
+initNavbar();
+
+const breeds = {
+
+dog: [
+{name:'Labrador',desc:'Friendly and loyal'},
+{name:'Golden Retriever',desc:'Playful and loving'},
+{name:'German Shepherd',desc:'Smart and protective'},
+{name:'Beagle',desc:'Curious and active'}
+],
+
+cat: [
+{name:'Persian',desc:'Calm indoor pet'},
+{name:'Siamese',desc:'Social and vocal'},
+{name:'Tabby',desc:'Easygoing and friendly'},
+{name:'British Shorthair',desc:'Quiet and relaxed'}
+],
+
+rabbit: [
+{name:'White Rabbit',desc:'Gentle and calm'},
+{name:'Dutch Rabbit',desc:'Playful and active'},
+{name:'Lionhead Rabbit',desc:'Fluffy and cute'},
+{name:'Mini Lop',desc:'Friendly small breed'}
+],
+
+bird: [
+{name:'Budgerigar',desc:'Talkative and small'},
+{name:'Cockatiel',desc:'Friendly and musical'},
+{name:'Parrot',desc:'Intelligent and social'},
+{name:'Lovebird',desc:'Colorful and energetic'}
+],
+
+fish: [
+{name:'Goldfish',desc:'Easy to maintain'},
+{name:'Betta Fish',desc:'Bright and solo'},
+{name:'Guppy',desc:'Small and colorful'},
+{name:'Angelfish',desc:'Elegant aquarium fish'}
+]
+
+}
+
+function selectPetType(type) {
+const user = JSON.parse(localStorage.getItem('pawsUser') || 'null')
+if (!user) {
+showToast('Login required')
+setTimeout(()=>window.location.href='login.html',1200)
+return
+}
+
+document.getElementById('step1').classList.add('hidden')
+document.getElementById('step2').classList.remove('hidden')
+
+const grid = document.getElementById('breedGrid')
+
+grid.innerHTML = (breeds[type] || []).map(b => `
+<div class="product-card">
+<div class="product-card-body">
+<h4>${b.name}</h4>
+<p>${b.desc}</p>
+<button class="btn btn-primary" onclick="addToCart('${b.name}')">🛒 Add</button>
+</div>
+</div>
+`).join('')
+}
+
+function goBack() {
+document.getElementById('step2').classList.add('hidden')
+document.getElementById('step1').classList.remove('hidden')
+}
+
+function addToCart(name) {
+showToast(name + ' request sent')
+}
+</script>
+
+</body>
+</html>

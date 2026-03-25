@@ -1,67 +1,250 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register - Pet Adoption</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register PawsHome</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div class="navbar"><a href="home.php">Home</a><a href="register.html">Register</a><a href="login.html">Login</a><a href="catalogue.php">Catalogue</a><a href="feedback.html">Feedback</a></div>
-    <div class="registration-container">
-        <h2 class="center" style="color:Purple">User Registration</h2>
-        <div id="errorBox" class="error-message"></div>
-        <form id="regForm" action="register.php" method="POST">
-            <div class="form-row">
-                <div class="form-group"><label>Full Name*</label><input type="text" id="fullname" name="fullname"></div>
-                <div class="form-group"><label>Email*</label><input type="email" id="email" name="email"></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group"><label>Flat No*</label><input type="text" id="flat" name="flat"></div>
-                <div class="form-group"><label>Building*</label><input type="text" id="building" name="building"></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group"><label>Pincode* (6 Digits)</label><input type="text" id="pincode" name="pincode" maxlength="6"></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Password*</label>
-                    <input type="password" name="pass" id="pass" oninput="checkStrength(this.value)">
-                    <div class="show-pass"><input type="checkbox" onclick="toggle('pass')"> Show Password</div>
-                    <span id="sm" class="strength-text"></span>
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password*</label>
-                    <input type="password" id="cpass">
-                    <div class="show-pass"><input type="checkbox" onclick="toggle('cpass')"> Show Password</div>
-                </div>
-            </div>
-            <button type="submit" class="reg-btn">Complete Registration</button>
-        </form>
-    </div>
-    <script>
-    function toggle(id) { let x = document.getElementById(id); x.type = (x.type === "password") ? "text" : "password"; }
-    function checkStrength(p) {
-        let m = document.getElementById('sm');
-        let strong = /[A-Z]/.test(p) && /[0-9]/.test(p) && /[!@#$%^&*]/.test(p);
-        let mid = /[A-Z]/.test(p) && /[0-9]/.test(p);
-        if (p.length >= 8 && strong) { m.innerText = "Strong"; m.style.color = "Green"; }
-        else if (p.length >= 6 && mid) { m.innerText = "Medium"; m.style.color = "Orange"; }
-        else { m.innerText = "Weak"; m.style.color = "Red"; }
+
+<nav class="navbar" id="navbar">
+  <a href="home.html" class="brand">PawsHome</a>
+  <a href="home.html">Home</a>
+  <a href="register.html" class="active">Register</a>
+  <a href="login.html" id="nav-login">Login</a>
+  <a href="catalogue.html">Catalogue</a>
+  <a href="feedback.html">Feedback</a>
+  <span class="welcome-msg hidden" id="welcome-msg"></span>
+  <a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+  <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div class="form-page">
+  <div class="form-card">
+    <h2>Create Your Account</h2>
+    <p class="subtitle">Join the PawsHome family adopt care and give love</p>
+
+    <div id="form-alert" class="alert alert-error hidden"></div>
+
+    <form id="registerForm" novalidate>
+
+      <div class="form-section-label">Personal Information</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName"/>
+          <div class="field-error" id="err-firstName">First name is required</div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName"/>
+          <div class="field-error" id="err-lastName">Last name is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email"/>
+        <div class="field-error" id="err-email">Enter valid email</div>
+      </div>
+
+      <div class="form-section-label">Address Details</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="flatNo">Flat House No</label>
+          <input type="text" id="flatNo"/>
+          <div class="field-error" id="err-flatNo">Required</div>
+        </div>
+
+        <div class="form-group">
+          <label for="building">Building Name</label>
+          <input type="text" id="building"/>
+          <div class="field-error" id="err-building">Required</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="street">Street</label>
+          <input type="text" id="street"/>
+        </div>
+
+        <div class="form-group">
+          <label for="area">Area</label>
+          <input type="text" id="area"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city"/>
+          <div class="field-error" id="err-city">Required</div>
+        </div>
+
+        <div class="form-group">
+          <label for="pincode">Pincode</label>
+          <input type="text" id="pincode" maxlength="6"/>
+          <div class="field-error" id="err-pincode">6 digits required</div>
+        </div>
+      </div>
+
+      <div class="form-section-label">Set Password</div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="password"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('password','eyeIcon1')" id="eyeIcon1">Show</button>
+        </div>
+
+        <div class="strength-bar" id="strengthBar">
+          <div class="strength-track">
+            <div class="strength-fill" id="strengthFill"></div>
+          </div>
+          <div class="strength-label" id="strengthLabel"></div>
+        </div>
+
+        <div class="field-error" id="err-password">Min 8 characters</div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="confirmPassword"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('confirmPassword','eyeIcon2')" id="eyeIcon2">Show</button>
+        </div>
+        <div class="field-error" id="err-confirmPassword">Passwords do not match</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full mt-2">
+        Create Account
+      </button>
+
+      <div class="login-link">
+        Already have an account <a href="login.html">Login</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+initNavbar();
+
+document.getElementById('password').addEventListener('input', function(){
+  const pw=this.value,bar=document.getElementById('strengthBar'),fill=document.getElementById('strengthFill'),label=document.getElementById('strengthLabel');
+  bar.className='strength-bar';
+  if(!pw){fill.style.width='0';label.textContent='';return;}
+
+  const hasUpper=/[A-Z]/.test(pw),hasLower=/[a-z]/.test(pw),hasNum=/[0-9]/.test(pw),hasSpec=/[^A-Za-z0-9]/.test(pw);
+  let level='weak';
+
+  if(pw.length>=8&&hasSpec)level='strong';
+  else if(pw.length>=8&&(hasUpper&&hasLower&&hasNum))level='medium';
+
+  bar.classList.add('strength-'+level);
+  label.textContent=level+' password';
+});
+
+function togglePw(id,btnId){
+  const inp=document.getElementById(id);
+  inp.type=inp.type==='password'?'text':'password';
+}
+
+['firstName','lastName','email','flatNo','building','city','pincode','password','confirmPassword'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',()=>clearFieldError(id));
+});
+
+function clearFieldError(id){
+  const inp=document.getElementById(id),err=document.getElementById('err-'+id);
+  if(inp)inp.classList.remove('error');
+  if(err)err.classList.remove('show');
+}
+
+function showFieldError(id,msg){
+  const inp=document.getElementById(id),err=document.getElementById('err-'+id);
+  if(inp)inp.classList.add('error');
+  if(err){if(msg)err.textContent=msg;err.classList.add('show');}
+}
+
+document.getElementById('registerForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+
+  const firstName=document.getElementById('firstName').value.trim();
+  const lastName=document.getElementById('lastName').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const flatNo=document.getElementById('flatNo').value.trim();
+  const building=document.getElementById('building').value.trim();
+  const street=document.getElementById('street').value.trim();
+  const area=document.getElementById('area').value.trim();
+  const city=document.getElementById('city').value.trim();
+  const pincode=document.getElementById('pincode').value.trim();
+  const password=document.getElementById('password').value;
+  const confirmPassword=document.getElementById('confirmPassword').value;
+
+  ['firstName','lastName','email','flatNo','building','city','pincode','password','confirmPassword'].forEach(clearFieldError);
+  document.getElementById('form-alert').classList.add('hidden');
+
+  const errors=[];
+  if(!firstName)errors.push({id:'firstName',msg:'Required'});
+  if(!lastName)errors.push({id:'lastName',msg:'Required'});
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))errors.push({id:'email',msg:'Invalid email'});
+  if(!flatNo)errors.push({id:'flatNo',msg:'Required'});
+  if(!building)errors.push({id:'building',msg:'Required'});
+  if(!city)errors.push({id:'city',msg:'Required'});
+  if(!pincode||!/^\d{6}$/.test(pincode))errors.push({id:'pincode',msg:'6 digits'});
+  if(!password||password.length<8)errors.push({id:'password',msg:'Min 8 chars'});
+  if(password!==confirmPassword)errors.push({id:'confirmPassword',msg:'Mismatch'});
+
+  if(errors.length>0){
+    errors.forEach(err=>showFieldError(err.id,err.msg));
+    document.getElementById(errors[0].id).focus();
+    return;
+  }
+
+  const formData=new FormData();
+  formData.append('action','register');
+  formData.append('firstName',firstName);
+  formData.append('lastName',lastName);
+  formData.append('email',email);
+  formData.append('flatNo',flatNo);
+  formData.append('building',building);
+  formData.append('street',street);
+  formData.append('area',area);
+  formData.append('city',city);
+  formData.append('pincode',pincode);
+  formData.append('password',password);
+
+  try{
+    const res=await fetch('api.php',{method:'POST',body:formData});
+    const data=await res.json();
+
+    if(data.success){
+      showToast('Registered');
+      setTimeout(()=>window.location.href='login.html',1500);
+    }else{
+      const alert=document.getElementById('form-alert');
+      alert.textContent=data.message||'Failed';
+      alert.classList.remove('hidden');
+      if(data.field)showFieldError(data.field,data.message);
     }
-    document.getElementById('regForm').onsubmit = function(e) {
-        let err = document.getElementById('errorBox');
-        let f = [
-            {id:'fullname', m:'Enter Name'}, {id:'pincode', m:'Pin must be 6 digits', v: x => x.length === 6},
-            {id:'pass', m:'Pass must be 8+ chars', v: x => x.length >= 8},
-            {id:'cpass', m:'Passwords Match Error', v: x => x === document.getElementById('pass').value}
-        ];
-        for (let i of f) {
-            let val = document.getElementById(i.id).value;
-            if (!val || (i.v && !i.v(val))) {
-                e.preventDefault(); err.innerText = i.m; err.style.display='block';
-                document.getElementById(i.id).focus(); return false;
-            }
-        }
-    };
-    </script>
+  }catch{
+    const alert=document.getElementById('form-alert');
+    alert.textContent='Network error';
+    alert.classList.remove('hidden');
+  }
+
+});
+
+</script>
 </body>
 </html>

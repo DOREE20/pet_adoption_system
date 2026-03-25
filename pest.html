@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pest Control PawsHome</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="home.html" class="brand">🐾 PawHome</a>
+  <a href="home.html">Home</a>
+  <a href="catalogue.html">Catalogue</a>
+  <a href="shopping.html">Shopping</a>
+  <a href="playtime.html">Playtime</a>
+  <a href="pest.html" class="active">Pest Control</a>
+  <a href="feedback.html">Feedback</a>
+  <span class="welcome-msg hidden" id="welcome-msg"></span>
+  <a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+  <a href="register.html" id="navRegister" class="hidden">Register</a>
+  <a href="login.html" id="navLogin" class="hidden">Login</a>
+  <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div class="section-wrap">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+
+<div>
+<h1>Pest Control Service</h1>
+<p>Safe pest removal service for your home</p>
+
+<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&auto=format&fit=crop" style="width:100%;margin-top:1rem">
+
+<div style="margin-top:1rem">
+<div>Pet Safe service for home</div>
+<div>Same day service available</div>
+<div>30 day guarantee</div>
+</div>
+
+<h2 style="margin-top:2rem">Stray Animal Help</h2>
+<p>If you see stray animals like dogs cats cows we help safely relocate and care</p>
+
+<div style="margin-top:1rem">
+<div>Stray Dogs control and rescue</div>
+<div>Stray Cats care and shelter</div>
+<div>Cows and large animals support</div>
+<div>Emergency help number 99999999</div>
+</div>
+
+</div>
+
+<div>
+<div class="form-card">
+
+<h2>Book Service</h2>
+
+<div id="form-alert" class="hidden"></div>
+<div id="form-success" class="hidden"></div>
+
+<form id="pestForm">
+
+<div>
+<label>Flat</label>
+<input type="text" id="p-flat">
+</div>
+
+<div>
+<label>Building</label>
+<input type="text" id="p-building">
+</div>
+
+<div>
+<label>City</label>
+<input type="text" id="p-city">
+</div>
+
+<div>
+<label>Pincode</label>
+<input type="text" id="p-pin">
+</div>
+
+<div style="margin-top:1rem">
+<label>Pests</label><br>
+<input type="checkbox" value="cockroach"> Cockroach<br>
+<input type="checkbox" value="ants"> Ants<br>
+<input type="checkbox" value="mosquito"> Mosquito<br>
+<input type="checkbox" value="rats"> Rats<br>
+<input type="checkbox" value="lizard"> Lizard<br>
+</div>
+
+<div style="margin-top:1rem">
+<label>Date</label>
+<input type="date" id="p-date">
+</div>
+
+<div>
+<label>Time</label>
+<select id="p-time">
+<option value="">Select</option>
+<option>Morning</option>
+<option>Afternoon</option>
+<option>Evening</option>
+</select>
+</div>
+
+<button type="submit" style="margin-top:1rem">Book Service</button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  initNavbar();
+
+  // Pest form - use api.php pest_booking
+  document.getElementById('pestForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const user = getUser();
+    if (!user) {
+      showToast('Login required for booking');
+      return;
+    }
+
+    const flat = document.getElementById('p-flat').value;
+    const building = document.getElementById('p-building').value;
+    const city = document.getElementById('p-city').value;
+    const pin = document.getElementById('p-pin').value;
+    const date = document.getElementById('p-date').value;
+    const time = document.getElementById('p-time').value;
+    const pests = [...document.querySelectorAll('input[type=checkbox]:checked')].map(x => x.value).join(', ');
+
+    if (!flat || !building || !city || !pin || !date || !time || !pests) {
+      document.getElementById('form-alert').textContent = 'Fill all details';
+      document.getElementById('form-alert').classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const data = await apiFetch('pest_booking', {
+        user_id: user.id,
+        flat,
+        building,
+        city,
+        pincode: pin,
+        pests,
+        date,
+        time
+      });
+      if (data.success) {
+        document.getElementById('form-success').textContent = 'Booking confirmed!';
+        document.getElementById('form-success').classList.remove('hidden');
+        document.getElementById('pestForm').reset();
+      } else {
+        document.getElementById('form-alert').textContent = 'Booking failed';
+        document.getElementById('form-alert').classList.remove('hidden');
+      }
+    } catch {
+      document.getElementById('form-alert').textContent = 'Network error';
+      document.getElementById('form-alert').classList.remove('hidden');
+    }
+  });
+</script>
+
+</script>
+
+</body>
+</html>

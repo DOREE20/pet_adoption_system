@@ -1,78 +1,152 @@
-body { font-family: Arial; margin: 0; background: lightsalmon; }
-.navbar { background: Purple; padding: 15px 50px; display: flex; gap: 30px; }
-.navbar a { color: white; text-decoration: none; font-weight: bold; }
-.hero { text-align: center; padding: 50px 20px; }
-.hero h1 { color: Orange; font-size: 45px; margin-bottom: 50px; }
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
 
+:root{
+  --primary:green; --primary-light:lightgreen; --primary-dark:darkgreen;
+  --accent:orange; --accent2:red;
+  --bg:whitesmoke; --bg2:beige;
+  --white:white; --text:black; --text-muted:gray;
+  --error:red; --success:green; --warning:orange;
+  --border:lightgray; --card-shadow:0 4px 24px rgba(0,0,0,0.08);
+  --radius:16px; --radius-sm:8px;
+}
 
-/* Home Page Layout */
-.main-content-row { display: flex; justify-content: center; align-items: center; gap: 50px; max-width: 1200px; margin: 0 auto; }
-.house-box { background: Pink; color: Purple; width: 500px; height: 450px; display: flex; align-items: center; justify-content: center; text-align: center; clip-path: polygon(50% 0%, 100% 40%, 100% 100%, 0% 100%, 0% 40%); padding-top: 80px; }
-.house-box p { font-size: 20px; font-weight: bold; width: 80%; line-height: 1.5; }
-.pet-image-container img { max-width: 500px; border: 5px solid Orange; border-radius: 10px; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* Registration & Forms */
-.registration-container { background: Pink; width: 550px; margin: 30px auto; padding: 25px; border-radius: 20px; border: 5px solid Purple; }
-.form-row { display: flex; gap: 15px; margin-bottom: 10px; }
-.form-group { flex: 1; display: flex; flex-direction: column; }
-label { color: Purple; font-weight: bold; font-size: 14px; }
-input { padding: 8px; border: 2px solid Orange; border-radius: 5px; }
-.strength-text { font-weight: bold; font-size: 12px; }
-.error-message { color: Red; background: White; padding: 8px; margin-bottom: 15px; border: 2px solid Red; display: none; text-align: center; font-weight: bold; }
-.reg-btn { background: Orange; color: white; padding: 12px; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 15px; }
+/* NAVBAR */
+.navbar{background:darkblue;padding:0 2rem;display:flex;align-items:center;position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+.navbar .brand{font-family:'Playfair Display',serif;font-size:1.5rem;color:orange;font-weight:900;margin-right:auto;padding:1rem 0}
+.navbar a{color:white;text-decoration:none;padding:1.2rem 1rem;font-size:0.95rem;font-weight:500;transition:0.2s;border-bottom:3px solid transparent}
+.navbar a:hover,.navbar a.active{background:rgba(255,255,255,0.1);color:orange;border-bottom-color:orange}
+.navbar .btn-logout{background:red;color:white;border-radius:8px;padding:0.5rem 1.2rem;margin-left:1rem;border:none;font-size:0.9rem;cursor:pointer}
+.navbar .btn-logout:hover{background:darkred}
+.navbar .welcome-msg{color:orange;font-size:0.9rem;font-weight:600;padding:0 1rem}
 
-/* Global helper classes */
-.text-purple { color: Purple; }
-.text-orange { color: Orange; }
-.center { text-align: center; }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:0.7rem 2rem;border-radius:50px;border:none;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none;transition:0.2s}
+.btn-primary{background:green;color:white}
+.btn-primary:hover{background:darkgreen;transform:translateY(-2px)}
+.btn-accent{background:orange;color:white}
+.btn-accent:hover{background:red}
+.btn-outline{background:none;color:green;border:2px solid green}
+.btn-outline:hover{background:green;color:white}
 
-.login-box { width: 400px; margin: 80px auto; padding: 40px; background: Pink; border: 5px solid Purple; border-radius: 20px; }
-.login-box h2 { color: Purple; text-align: center; margin-bottom: 25px; }
-.login-footer { text-align: center; margin-top: 15px; font-size: 14px; }
-.login-footer a { color: Orange; font-weight: bold; text-decoration: none; }
+/* HERO */
+.hero{min-height:80vh;background:linear-gradient(120deg,darkblue,blue,lightblue);display:flex;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1600') center/cover no-repeat;opacity:0.2}
+.hero-content{position:relative;z-index:1;max-width:750px}
+.hero h1{font-family:'Playfair Display',serif;font-size:3rem;color:white;font-weight:900;margin-bottom:1rem}
+.hero p{color:white;font-size:1.1rem;margin-bottom:2rem}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
 
-body { font-family: Arial; margin: 0; background: white; }
-.navbar { background: Purple; padding: 15px 50px; display: flex; gap: 30px; }
-.navbar a { color: white; text-decoration: none; font-weight: bold; }
-.hero { text-align: center; padding: 50px 20px; }
-.hero h1 { color: Orange; font-size: 45px; }
-.main-content-row { display: flex; justify-content: center; gap: 50px; margin-top: 20px; }
-.house-box { background: Pink; color: Purple; width: 450px; height: 400px; display: flex; align-items: center; justify-content: center; clip-path: polygon(50% 0%, 100% 40%, 100% 100%, 0% 100%, 0% 40%); padding: 60px 20px 0; text-align: center; }
-.pet-image-container img { max-width: 450px; border: 5px solid Orange; border-radius: 15px; }
-.registration-container { background: Pink; width: 600px; margin: 20px auto; padding: 25px; border-radius: 20px; border: 5px solid Purple; }
-.form-row { display: flex; gap: 15px; margin-bottom: 10px; }
-.form-group { flex: 1; display: flex; flex-direction: column; }
-label { color: Purple; font-weight: bold; font-size: 14px; }
-input, select { padding: 8px; border: 2px solid Orange; border-radius: 5px; }
-.show-pass { display: flex; align-items: center; gap: 5px; margin-top: 5px; font-size: 12px; color: Purple; cursor: pointer; }
-.strength-text { font-weight: bold; font-size: 12px; margin-top: 5px; }
-.error-message { color: Red; background: White; padding: 8px; margin-bottom: 10px; border: 2px solid Red; display: none; text-align: center; }
-.reg-btn { background: Orange; color: white; padding: 12px; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
-th, td { border: 2px solid Orange; padding: 8px; text-align: left; font-size: 13px; }
-th { background: Purple; color: white; }
-.center { text-align: center; }
+/* ADOPT BOX */
+.adopt-section{padding:4rem 2rem;max-width:1100px;margin:auto}
+.adopt-box{background:white;border-radius:16px;padding:3rem;box-shadow:var(--card-shadow);border-left:6px solid lightgreen;display:flex;gap:2rem}
+.adopt-box h2{font-size:1.8rem;color:darkgreen;margin-bottom:1rem}
+.adopt-box ul{list-style:none}
+.adopt-box li{padding:0.4rem 0;color:gray}
 
-.cat-header { color: Orange; text-align: center; margin-top: 20px; }
-.btn-group { display: flex; justify-content: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-.animal-btn { background: Purple; color: white; border: none; padding: 10px 15px; border-radius: 15px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-.animal-btn:hover { background: Orange; }
-.scroll-container { display: flex; gap: 20px; overflow-x: auto; padding: 30px; border: 3px dashed Pink; border-radius: 20px; background: white; margin: 0 20px; }
-.breed-card { min-width: 280px; background: Pink; border: 3px solid Purple; border-radius: 20px; padding: 20px; position: relative; box-shadow: 4px 4px 0px Orange; }
-.hot-badge { position: absolute; top: -12px; left: -10px; background: Orange; color: white; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; border: 2px solid Purple; }
-.breed-name { color: Red; font-weight: bold; font-size: 22px; display: block; margin-bottom: 12px; text-decoration: underline; }
-.card-info p { margin: 6px 0; font-size: 14px; color: Purple; text-align: left; }
-.card-info b { color: Black; }
-.helpline { display: block; font-size: 12px; color: Purple; font-weight: bold; margin-top: 5px; }
-.btn-container { display: flex; flex-direction: column; align-items: center; }
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;padding:2rem}
+.stat-card{background:purple;color:white;border-radius:16px;padding:2rem;text-align:center}
+.stat-card .num{font-size:2.5rem;color:yellow}
 
-.fb-container { background: Pink; width: 800px; margin: 20px auto; padding: 30px; border: 5px solid Purple; border-radius: 20px; }
-.rating-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 10px; background: white; border-radius: 10px; }
-.star-box { display: flex; flex-direction: column; align-items: center; font-size: 12px; font-weight: bold; width: 60px; padding: 5px; border-radius: 5px; }
-/* VIBGYOR Colors */
-.v { background: #8F00FF; color: white; } .i { background: #4B0082; color: white; }
-.b { background: #0000FF; color: white; } .g { background: #00FF00; color: black; }
-.y { background: #FFFF00; color: black; } .o { background: #FF7F00; color: black; }
-.r { background: #FF0000; color: white; }
-.feedback-msg { width: 100%; height: 80px; margin-top: 10px; border: 2px solid Orange; border-radius: 10px; padding: 10px; }
-.thank-you-screen { background: Green; color: white; height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+/* SECTIONS */
+.section-title{font-size:2rem;color:darkgreen;margin-bottom:0.5rem}
+.section-sub{color:gray;margin-bottom:2rem}
+.section-wrap{padding:4rem 2rem;max-width:1100px;margin:auto}
+
+/* CARDS */
+.animal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem}
+.animal-card{background:white;border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow);transition:0.2s}
+.animal-card:hover{transform:translateY(-5px)}
+.animal-card img{width:100%;height:180px;object-fit:cover}
+.animal-card-body{padding:1rem}
+.animal-card-body h3{color:darkgreen}
+.badge{padding:3px 10px;border-radius:20px;background:beige;color:green;font-size:0.8rem}
+
+/* FORM */
+.form-page{min-height:100vh;background:whitesmoke;padding:3rem 1rem}
+.form-card{background:white;border-radius:16px;padding:2rem;max-width:680px;margin:auto;box-shadow:var(--card-shadow)}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.7rem;border:1px solid lightgray;border-radius:8px;background:whitesmoke}
+.form-group input:focus{border-color:lightgreen}
+.field-error{color:red;font-size:0.8rem;display:none}
+.field-error.show{display:block}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
+.service-card{background:white;border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow);transition:0.2s}
+.service-card:hover{transform:translateY(-5px)}
+.service-card img{width:100%;height:180px;object-fit:cover}
+.service-card-body{padding:1rem}
+.service-card-body h3{color:darkgreen}
+
+/* SHOP */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.product-card{background:white;border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow)}
+.product-card:hover{transform:translateY(-5px)}
+.product-card-body{padding:1rem}
+.product-card-body .price{color:red}
+
+/* ALERT */
+.alert{padding:1rem;border-radius:8px;margin-bottom:1rem}
+.alert-error{background:pink;color:red}
+.alert-success{background:lightgreen;color:green}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+thead{background:darkblue;color:white}
+td,th{padding:0.7rem;border-bottom:1px solid lightgray}
+
+/* FOOTER */
+footer{background:black;color:white;text-align:center;padding:2rem;margin-top:3rem}
+footer span{color:orange}
+
+/* UTIL */
+.hidden{display:none}
+.text-center{text-align:center}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .form-row{grid-template-columns:1fr}
+  .adopt-box{flex-direction:column}
+  .navbar{flex-wrap:wrap}
+  .navbar a{padding:0.8rem}
+}
+
+/* TOAST */
+.toast{position:fixed;top:20px;right:20px;background:var(--success);color:var(--white);padding:1rem 1.5rem;border-radius:var(--radius);box-shadow:var(--card-shadow);z-index:10000;transform:translateX(400px);transition:0.3s;}
+.toast:not(.hidden){transform:translateX(0);}
+
+/* CATALOGUE SIDEBAR & GRID */
+.catalogue-layout{display:flex;min-height:80vh;}
+.catalogue-sidebar{width:220px;background:var(--primary-light);padding:1.5rem;flex-shrink:0;}
+.pet-filter{cursor:pointer;padding:0.75rem;margin:0.5rem 0;border-radius:var(--radius-sm);background:var(--white);transition:0.2s;}
+.pet-filter:hover{background:var(--white);}
+.pet-filter.active{background:var(--primary);color:var(--white);}
+.catalogue-main{flex:1;padding:2rem;overflow:auto;}
+.pets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;}
+.pet-card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--card-shadow);transition:0.2s;}
+.pet-card:hover{transform:translateY(-4px);}
+.pet-card img{width:100%;height:200px;object-fit:cover;}
+.pet-info{padding:1.2rem;}
+.pet-type-icon{font-size:1.5rem;margin-right:0.5rem;}
+.pet-details{line-height:1.5;}
+
+/* FEEDBACK */
+.feedback-stars{display:flex;gap:0.2rem;}
+.star{fill:gray;width:20px;height:20px;cursor:pointer;transition:0.2s;}
+.star.filled{fill:gold;}
+.feedback-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.feedback-card{background:var(--white);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--card-shadow);}
+.avg-rating{display:inline-flex;align-items:center;gap:0.5rem;font-size:1.2rem;font-weight:600;color:var(--primary-dark);}
+
+/* SLOT CARDS */
+.slot-card{padding:1rem;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:0.2s;text-align:center;margin:0.5rem 0;}
+.slot-card.available:hover{background:var(--primary-light);}
+.slot-card.available.selected{background:var(--primary);color:var(--white);border-color:var(--primary);}
+.slot-card.booked{background:var(--error);color:var(--white);cursor:not-allowed;}
+
+/* BETTER RESPONSIVE */
+@media(max-width:900px){.catalogue-layout{flex-direction:column;}.catalogue-sidebar{width:100%;order:2;}.catalogue-main{order:1;}}
+@media(max-width:500px){.pets-grid{grid-template-columns:1fr;}}

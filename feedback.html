@@ -1,48 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Pet Adoption Feedback</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback - PawHome</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="home.php">Home</a><a href="register.html">Register</a><a href="login.html">Login</a><a href="catalogue.html">Catalogue</a><a href="feedback.html">Feedback</a>
+  <!-- NAVBAR - Consistent -->
+  <nav class="navbar" id="navbar">
+    <a href="home.html" class="brand">🐾 PawHome</a>
+    <a href="home.html">Home</a>
+    <a href="catalogue.html">Catalogue</a>
+    <a href="shopping.html">Shopping</a>
+    <a href="playtime.html">Playtime</a>
+    <a href="pest.html">Pest Control</a>
+    <a href="feedback.html" class="active">Feedback</a>
+    <a href="register.html" id="navRegister">Register</a>
+    <a href="login.html" id="navLogin">Login</a>
+    <span class="welcome-msg hidden" id="welcome-msg"></span>
+    <a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+    <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+  </nav>
+
+  <div class="section-wrap">
+    <div class="text-center">
+      <h1 class="section-title">Your Feedback Matters</h1>
+      <p class="section-sub">Help us improve by sharing your experience</p>
+      
+      <!-- AVG RATING -->
+      <div class="avg-rating" id="avgRating">
+        <div id="avgScore">-</div>
+        <div>Average Rating</div>
+      </div>
     </div>
 
-    <div class="fb-container">
-        <h2 class="center" style="color:Purple;">Help Us Improve!</h2>
-        <form action="feedback.php" method="POST">
-            <div class="form-group" style="margin-bottom:20px;">
-                <label>Enter Registered Email*</label>
-                <input type="email" name="user_email" required placeholder="To verify your feedback">
-            </div>
-
-            <script>
-                const traits = ["Pet Health Quality", "Delivery Timeliness", "Staff Behavior", "App Ease of Use", "Pet Vaccination Status", "Price Fairness", "Expert Consultation"];
-                const colors = ['v', 'i', 'b', 'g', 'y', 'o', 'r'];
-                
-                traits.forEach((trait, index) => {
-                    document.write(`<div class="rating-row">
-                        <span style="width:180px; font-weight:bold; color:Purple;">${trait}</span>
-                        <div style="display:flex; gap:5px;">`);
-                    for(let s=1; s<=7; s++) {
-                        document.write(`
-                            <div class="star-box ${colors[s-1]}">
-                                <label>${s} ★</label>
-                                <input type="radio" name="rate${index}" value="${s}">
-                            </div>`);
-                    }
-                    document.write(`</div></div>`);
-                });
-            </script>
-
-            <label>Additional Improvisations / Suggestions:</label>
-            <textarea name="comments" class="feedback-msg" placeholder="Tell us more..."></textarea>
-            
-            <button type="submit" class="reg-btn">Submit Feedback</button>
-        </form>
+    <div class="form-card" style="max-width:600px;margin:2rem auto;">
+      <h2>Share Your Review</h2>
+      <form id="feedbackForm">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="fb-email" required>
+        </div>
+        <div class="form-group">
+          <label>Service</label>
+          <select id="fb-service" required>
+            <option value="">Select Service</option>
+            <option>Adoption</option>
+            <option>Playtime</option>
+            <option>Pest Control</option>
+            <option>Shopping</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="feedback-stars" id="ratingStars">
+            <svg class="star" data-rating="1"><use href="#star-path"></use></svg>
+            <svg class="star" data-rating="2"><use href="#star-path"></use></svg>
+            <svg class="star" data-rating="3"><use href="#star-path"></use></svg>
+            <svg class="star" data-rating="4"><use href="#star-path"></use></svg>
+            <svg class="star" data-rating="5"><use href="#star-path"></use></svg>
+          </div>
+          <input type="hidden" id="fb-rating" value="0">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="fb-message" rows="4" required placeholder="Tell us about your experience..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Submit Feedback</button>
+      </form>
+      <div id="form-alert" class="alert alert-error hidden"></div>
+      <div id="form-success" class="alert alert-success hidden"></div>
     </div>
+
+    <!-- RECENT FEEDBACKS -->
+    <h2 style="text-align:center;margin:3rem 0 2rem;">Recent Reviews</h2>
+    <div class="feedback-grid" id="recentFeedbacks">
+      <div class="text-center" style="grid-column:1;">Loading...</div>
+    </div>
+  </div>
+
+  <svg style="display:none;">
+    <symbol id="star-path" viewBox="0 0 24 24">
+      <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828L20.332 22 12 18.288 3.668 22l5.332-6.452-6.064-5.828 8.332-1.151z"/>
+    </symbol>
+  </svg>
+
+  <script src="app.js"></script>
+  <script>
+    initNavbar();
+
+    // Load avg & recent
+    async function loadFeedbackData() {
+      try {
+        const avgData = await apiFetch('get_feedback_avg');
+        if (avgData.success) {
+          document.getElementById('avgScore').textContent = avgData.avg_rating || 'No reviews';
+        }
+        // Fetch recent (add to api later if needed, mock for now)
+        document.getElementById('recentFeedbacks').innerHTML = `
+          <div class="feedback-card">
+            <div style="font-weight:600;margin-bottom:0.5rem;">Great service!</div>
+            <div style="color:var(--text-muted);font-size:0.9rem;">Adoption - 5 stars</div>
+          </div>
+        `;
+      } catch {}
+    }
+    loadFeedbackData();
+
+    // Stars interactive
+    document.getElementById('ratingStars').addEventListener('click', (e) => {
+      const star = e.target.closest('.star');
+      if (!star) return;
+      const rating = star.dataset.rating;
+      document.getElementById('fb-rating').value = rating;
+      document.querySelectorAll('.star').forEach(s => {
+        s.classList.toggle('filled', s.dataset.rating <= rating);
+      });
+    });
+
+    // Form submit
+    document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('fb-email').value;
+      const service = document.getElementById('fb-service').value;
+      const rating = document.getElementById('fb-rating').value;
+      const message = document.getElementById('fb-message').value;
+
+      if (!rating) return showToast('Please rate');
+
+      const data = await apiFetch('feedback', {email, service, rating, message});
+      if (data.success) {
+        document.getElementById('form-success').textContent = 'Thank you!';
+        document.getElementById('form-success').classList.remove('hidden');
+        document.getElementById('feedbackForm').reset();
+        document.getElementById('fb-rating').value = '0';
+        document.querySelectorAll('.star').forEach(s => s.classList.remove('filled'));
+        loadFeedbackData();
+      } else {
+        document.getElementById('form-alert').textContent = 'Submit failed';
+        document.getElementById('form-alert').classList.remove('hidden');
+      }
+    });
+  </script>
 </body>
-</html> 
-
+</html>
