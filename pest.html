@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pest Control – PawHome</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.pest-check-group{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin:.5rem 0;}
+.pest-check{display:flex;align-items:center;gap:.5rem;background:white;padding:.5rem .8rem;border-radius:8px;border:1px solid #ddd;cursor:pointer;font-size:.9rem;}
+.pest-check input{accent-color:darkgreen;}
+.pest-hero{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem;margin-bottom:2rem;height:200px;border-radius:12px;overflow:hidden;}
+.pest-hero img{width:100%;height:100%;object-fit:cover;}
+</style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="home.html" class="brand">🐾 PawHome</a>
+  <a href="home.html">Home</a>
+  <a href="catalogue.html">Catalogue</a>
+  <a href="shopping.html">Shopping</a>
+  <a href="playtime.html">Playtime</a>
+  <a href="pest.html" class="active">Pest Control</a>
+  <a href="vet.html">Vet</a>
+  <a href="feedback.html">Feedback</a>
+  <a href="register.html" id="navRegister">Register</a>
+  <a href="login.html" id="nav-login">Login</a>
+  <span class="welcome-msg hidden" id="welcome-msg"></span>
+  <a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+  <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div class="section-wrap">
+
+  <!-- HERO IMAGES -->
+  <div class="pest-hero">
+    <img src="https://images.unsplash.com/photo-1597345637960-95e29f55e3f0?w=800&auto=format&fit=crop" alt="Pest Control"/>
+    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&auto=format&fit=crop" alt="Clean Home"/>
+    <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&auto=format&fit=crop" alt="Professional"/>
+  </div>
+
+  <h1 class="section-title">🦟 Pest Control Service</h1>
+  <p class="section-sub">Professional pet-safe pest control for your home</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+
+    <!-- LEFT: FORM -->
+    <div>
+      <div class="form-card">
+        <h2>Book Pest Control</h2>
+
+        <div id="form-alert"   class="alert alert-error   hidden"></div>
+        <div id="form-success" class="alert alert-success hidden"></div>
+
+        <form id="pestForm">
+
+          <div class="form-section-label">Your Address</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Flat / House No.</label>
+              <input type="text" id="pest-flat" placeholder="e.g. A-401"/>
+              <div class="field-error" id="err-pest-flat">Required</div>
+            </div>
+            <div class="form-group">
+              <label>Building Name</label>
+              <input type="text" id="pest-building" placeholder="e.g. Sunrise Towers"/>
+              <div class="field-error" id="err-pest-building">Required</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="pest-city" placeholder="e.g. Mumbai"/>
+              <div class="field-error" id="err-pest-city">Required</div>
+            </div>
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" id="pest-pincode" maxlength="6" placeholder="6-digit pincode"/>
+              <div class="field-error" id="err-pest-pincode">6 digits required</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Type of Pests</label>
+            <div class="pest-check-group">
+              <label class="pest-check"><input type="checkbox" name="pest" value="Cockroaches"> 🪳 Cockroaches</label>
+              <label class="pest-check"><input type="checkbox" name="pest" value="Rats"> 🐀 Rats / Mice</label>
+              <label class="pest-check"><input type="checkbox" name="pest" value="Ants"> 🐜 Ants</label>
+              <label class="pest-check"><input type="checkbox" name="pest" value="Bedbugs"> 🛏️ Bedbugs</label>
+              <label class="pest-check"><input type="checkbox" name="pest" value="Mosquitoes"> 🦟 Mosquitoes</label>
+              <label class="pest-check"><input type="checkbox" name="pest" value="Termites"> 🪵 Termites</label>
+              <label class="pest-check"><input type="checkbox" name="pest" value="Lizards"> 🦎 Lizards</label>
+              <label class="pest-check"><input type="checkbox" name="pest" value="Others"> ➕ Others</label>
+            </div>
+            <div class="field-error" id="err-pest-type">Select at least one pest type</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Preferred Date</label>
+              <input type="date" id="pest-date"/>
+              <div class="field-error" id="err-pest-date">Required</div>
+            </div>
+            <div class="form-group">
+              <label>Preferred Time</label>
+              <select id="pest-time">
+                <option value="">Select slot</option>
+                <option value="Morning (9 AM – 12 PM)">Morning (9 AM – 12 PM)</option>
+                <option value="Afternoon (12 PM – 3 PM)">Afternoon (12 PM – 3 PM)</option>
+                <option value="Evening (3 PM – 6 PM)">Evening (3 PM – 6 PM)</option>
+              </select>
+              <div class="field-error" id="err-pest-time">Required</div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full mt-2">📋 Book Pest Control</button>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT: INFO + HISTORY -->
+    <div>
+
+      <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--card-shadow);margin-bottom:1.5rem;">
+        <h3>Our Pest Control Services</h3>
+        <ul style="list-style:none;line-height:2;">
+          <li>🐾 100% pet-safe chemicals</li>
+          <li>✅ Licensed professionals</li>
+          <li>🏠 Full-home treatment</li>
+          <li>🔄 Follow-up visit included</li>
+          <li>📞 24/7 helpline support</li>
+          <li>⏱️ 2-4 hour service window</li>
+        </ul>
+      </div>
+
+      <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--card-shadow);">
+        <h3>My Pest Control Requests</h3>
+        <div id="myPestBookings" style="margin-top:1rem;">
+          <p style="color:gray;font-size:.9rem;">Login to see your requests.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<footer style="background:black;color:white;text-align:center;padding:2rem;">
+  <p>PawHome – All rights reserved</p>
+</footer>
+
+<script src="app.js"></script>
+<script>
+
+initNavbar();
+
+// Set min date to today
+document.getElementById('pest-date').min = new Date().toISOString().split('T')[0];
+
+// Pre-fill address if user is logged in
+const autoUser = getUser();
+if(autoUser){
+  // Try to load address from API
+  apiFetch('get_user_data',{user_id:autoUser.id},'GET').then(data=>{
+    if(data.success && data.address){
+      const a=data.address;
+      if(a.flat_no)   document.getElementById('pest-flat').value     = a.flat_no;
+      if(a.building)  document.getElementById('pest-building').value  = a.building;
+      if(a.city)      document.getElementById('pest-city').value      = a.city;
+      if(a.pincode)   document.getElementById('pest-pincode').value   = a.pincode;
+    }
+  }).catch(()=>{});
+  loadMyPestBookings();
+}
+
+// ── Form submit ───────────────────────────────────────────────────────────────
+document.getElementById('pestForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const user = getUser();
+  const flat    = document.getElementById('pest-flat').value.trim();
+  const building= document.getElementById('pest-building').value.trim();
+  const city    = document.getElementById('pest-city').value.trim();
+  const pincode = document.getElementById('pest-pincode').value.trim();
+  const date    = document.getElementById('pest-date').value;
+  const time    = document.getElementById('pest-time').value;
+  const checked = [...document.querySelectorAll('input[name="pest"]:checked')].map(c=>c.value);
+
+  // Clear errors
+  ['flat','building','city','pincode','date','time'].forEach(id=>{
+    document.getElementById('err-pest-'+id).classList.remove('show');
+  });
+  document.getElementById('err-pest-type').classList.remove('show');
+  document.getElementById('form-alert').classList.add('hidden');
+  document.getElementById('form-success').classList.add('hidden');
+
+  let valid=true;
+  if(!flat)               { document.getElementById('err-pest-flat').classList.add('show');     valid=false; }
+  if(!building)           { document.getElementById('err-pest-building').classList.add('show'); valid=false; }
+  if(!city)               { document.getElementById('err-pest-city').classList.add('show');     valid=false; }
+  if(!pincode||!/^\d{6}$/.test(pincode)){ document.getElementById('err-pest-pincode').classList.add('show'); valid=false; }
+  if(!checked.length)     { document.getElementById('err-pest-type').classList.add('show');     valid=false; }
+  if(!date)               { document.getElementById('err-pest-date').classList.add('show');     valid=false; }
+  if(!time)               { document.getElementById('err-pest-time').classList.add('show');     valid=false; }
+  if(!valid) return;
+
+  const pests = checked.join(', ');
+
+  try {
+    const data = await apiFetch('pest_booking',{
+      user_id : user ? user.id : 0,
+      flat    : flat,
+      building: building,
+      city    : city,
+      pincode : pincode,
+      pests   : pests,
+      date    : date,
+      time    : time
+    });
+
+    if(data.success){
+      document.getElementById('form-success').textContent='✅ Pest control booking confirmed! We will contact you shortly.';
+      document.getElementById('form-success').classList.remove('hidden');
+      document.getElementById('pestForm').reset();
+      loadMyPestBookings();
+    } else {
+      document.getElementById('form-alert').textContent='Booking failed. Please try again.';
+      document.getElementById('form-alert').classList.remove('hidden');
+    }
+  } catch(e){
+    document.getElementById('form-alert').textContent='Network error. Is the server running?';
+    document.getElementById('form-alert').classList.remove('hidden');
+  }
+});
+
+// ── Load my pest bookings ─────────────────────────────────────────────────────
+async function loadMyPestBookings(){
+  const user = getUser();
+  const el = document.getElementById('myPestBookings');
+  if(!user){
+    el.innerHTML='<p style="color:gray;font-size:.9rem;">Login to see your requests.</p>';
+    return;
+  }
+  try {
+    const data = await apiFetch('get_user_data',{user_id:user.id},'GET');
+    const pest  = data.pest||[];
+    if(!pest.length){
+      el.innerHTML='<p style="color:gray;font-size:.9rem;">No bookings yet.</p>';
+      return;
+    }
+    el.innerHTML = pest.map(p=>`
+      <div style="border:1px solid #eee;border-radius:8px;padding:.8rem;margin-bottom:.6rem;">
+        <div style="font-weight:600;">🦟 ${p.pests}</div>
+        <div style="font-size:.85rem;color:#555;">📅 ${p.date} &nbsp;|&nbsp; ⏰ ${p.time_slot}</div>
+        <div style="margin-top:.3rem;">${statusBadge(p.status)}</div>
+      </div>`).join('');
+  } catch(e){
+    el.innerHTML='<p style="color:gray;">Could not load bookings.</p>';
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vet Appointment – PawHome</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.vet-response{background:#eaf7ec;border-left:4px solid green;border-radius:8px;padding:.9rem 1.1rem;margin-top:.5rem;}
+.vet-response strong{color:darkgreen;}
+.vet-hero{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem;margin-bottom:2rem;height:200px;border-radius:12px;overflow:hidden;}
+.vet-hero img{width:100%;height:100%;object-fit:cover;}
+</style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="home.html" class="brand">🐾 PawHome</a>
+  <a href="home.html">Home</a>
+  <a href="catalogue.html">Catalogue</a>
+  <a href="shopping.html">Shopping</a>
+  <a href="playtime.html">Playtime</a>
+  <a href="pest.html">Pest Control</a>
+  <a href="vet.html" class="active">Vet</a>
+  <a href="feedback.html">Feedback</a>
+  <a href="register.html" id="navRegister">Register</a>
+  <a href="login.html" id="nav-login">Login</a>
+  <span class="welcome-msg hidden" id="welcome-msg"></span>
+  <a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+  <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div class="section-wrap">
+
+  <!-- HERO IMAGES -->
+  <div class="vet-hero">
+    <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=800&auto=format&fit=crop" alt="Vet with dog"/>
+    <img src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=400&auto=format&fit=crop" alt="Rabbit"/>
+    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&auto=format&fit=crop" alt="Cat"/>
+  </div>
+
+  <h1 class="section-title">🩺 Vet Appointment</h1>
+  <p class="section-sub">Describe your pet's condition and book a vet consultation</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+
+    <!-- LEFT: BOOKING FORM -->
+    <div>
+      <div class="form-card">
+        <h2>Book Vet Appointment</h2>
+
+        <div id="form-alert"   class="alert alert-error   hidden"></div>
+        <div id="form-success" class="alert alert-success hidden"></div>
+
+        <form id="vetForm">
+
+          <div class="form-group">
+            <label>Pet Name</label>
+            <input type="text" id="petName" placeholder="e.g. Bruno"/>
+            <div class="field-error" id="err-petName">Required</div>
+          </div>
+
+          <div class="form-group">
+            <label>Pet Type</label>
+            <select id="petType">
+              <option value="">Select type</option>
+              <option>Dog</option>
+              <option>Cat</option>
+              <option>Rabbit</option>
+              <option>Bird</option>
+              <option>Fish</option>
+              <option>Other</option>
+            </select>
+            <div class="field-error" id="err-petType">Required</div>
+          </div>
+
+          <div class="form-group">
+            <label>Describe the Situation</label>
+            <textarea id="situation" rows="5" placeholder="Describe symptoms, behaviour changes, duration, anything relevant for the vet..."></textarea>
+            <div class="field-error" id="err-situation">Please describe the situation</div>
+          </div>
+
+          <div class="form-group">
+            <label>Preferred Date</label>
+            <input type="date" id="vetDate"/>
+            <div class="field-error" id="err-vetDate">Required</div>
+          </div>
+
+          <div class="form-group">
+            <label>Preferred Time Slot</label>
+            <select id="vetSlot">
+              <option value="">Select slot</option>
+              <option value="09:00 AM – 10:00 AM">09:00 AM – 10:00 AM</option>
+              <option value="10:00 AM – 11:00 AM">10:00 AM – 11:00 AM</option>
+              <option value="11:00 AM – 12:00 PM">11:00 AM – 12:00 PM</option>
+              <option value="02:00 PM – 03:00 PM">02:00 PM – 03:00 PM</option>
+              <option value="03:00 PM – 04:00 PM">03:00 PM – 04:00 PM</option>
+              <option value="04:00 PM – 05:00 PM">04:00 PM – 05:00 PM</option>
+            </select>
+            <div class="field-error" id="err-vetSlot">Required</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">📨 Book Appointment</button>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT: INFO + MY APPOINTMENTS -->
+    <div>
+
+      <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--card-shadow);margin-bottom:1.5rem;">
+        <h3>About Our Vet Service</h3>
+        <ul style="list-style:none;line-height:2;">
+          <li>🩺 Certified veterinarians</li>
+          <li>💊 Medicine prescribed online</li>
+          <li>📱 Video & in-person options</li>
+          <li>🐾 All pets welcome</li>
+          <li>⏱️ 24hr response time</li>
+          <li>🔒 Confidential consultation</li>
+        </ul>
+      </div>
+
+      <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--card-shadow);">
+        <h3>My Vet Appointments</h3>
+        <div id="myVetAppts" style="margin-top:1rem;">
+          <p style="color:gray;font-size:.9rem;">Login to see your appointments.</p>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /grid -->
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<footer style="background:black;color:white;text-align:center;padding:2rem;">
+  <p>PawHome – All rights reserved</p>
+</footer>
+
+<script src="app.js"></script>
+<script>
+
+initNavbar();
+
+// Set minimum date to today
+document.getElementById('vetDate').min = new Date().toISOString().split('T')[0];
+
+// ── Form submit ───────────────────────────────────────────────────────────────
+document.getElementById('vetForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const user = getUser();
+  if(!user){
+    showToast('Please login first');
+    setTimeout(()=>window.location.href='login.html',1200);
+    return;
+  }
+
+  const petName  = document.getElementById('petName').value.trim();
+  const petType  = document.getElementById('petType').value;
+  const situation= document.getElementById('situation').value.trim();
+  const vetDate  = document.getElementById('vetDate').value;
+  const vetSlot  = document.getElementById('vetSlot').value;
+
+  // Clear errors
+  ['petName','petType','situation','vetDate','vetSlot'].forEach(id=>{
+    document.getElementById('err-'+id).classList.remove('show');
+  });
+  document.getElementById('form-alert').classList.add('hidden');
+  document.getElementById('form-success').classList.add('hidden');
+
+  let valid=true;
+  if(!petName)   { document.getElementById('err-petName').classList.add('show');   valid=false; }
+  if(!petType)   { document.getElementById('err-petType').classList.add('show');   valid=false; }
+  if(!situation) { document.getElementById('err-situation').classList.add('show'); valid=false; }
+  if(!vetDate)   { document.getElementById('err-vetDate').classList.add('show');   valid=false; }
+  if(!vetSlot)   { document.getElementById('err-vetSlot').classList.add('show');   valid=false; }
+  if(!valid) return;
+
+  try {
+    const data = await apiFetch('vet_booking',{
+      user_id  : user.id,
+      pet_name : petName,
+      pet_type : petType,
+      situation: situation,
+      date     : vetDate,
+      time_slot: vetSlot
+    });
+
+    if(data.success){
+      document.getElementById('form-success').textContent = '✅ Vet appointment booked! Our vet will review and respond within 24 hours.';
+      document.getElementById('form-success').classList.remove('hidden');
+      document.getElementById('vetForm').reset();
+      loadMyVetAppts();
+    } else {
+      document.getElementById('form-alert').textContent = data.msg || 'Booking failed. Please try again.';
+      document.getElementById('form-alert').classList.remove('hidden');
+    }
+  } catch(e){
+    document.getElementById('form-alert').textContent = 'Network error. Is the server running?';
+    document.getElementById('form-alert').classList.remove('hidden');
+  }
+});
+
+// ── Load user's vet appointments ──────────────────────────────────────────────
+async function loadMyVetAppts(){
+  const user = getUser();
+  const el   = document.getElementById('myVetAppts');
+  if(!user){
+    el.innerHTML='<p style="color:gray;font-size:.9rem;">Login to see your appointments.</p>';
+    return;
+  }
+
+  try {
+    const data = await apiFetch('get_vet_bookings',{user_id:user.id},'GET');
+    if(!data.success||!data.bookings.length){
+      el.innerHTML='<p style="color:gray;font-size:.9rem;">No vet appointments yet.</p>';
+      return;
+    }
+
+    el.innerHTML = data.bookings.map(b=>`
+      <div style="border:1px solid #eee;border-radius:8px;padding:.9rem;margin-bottom:.8rem;">
+        <div style="font-weight:700;color:darkblue;">${b.pet_name} <span style="font-weight:400;color:gray;">(${b.pet_type})</span></div>
+        <div style="font-size:.85rem;color:#555;">📅 ${b.date} &nbsp;|&nbsp; ⏰ ${b.time_slot}</div>
+        <div style="margin:.4rem 0;">${statusBadge(b.status)}</div>
+        ${b.vet_notes ? `
+        <div class="vet-response">
+          <strong>🩺 Vet Notes:</strong> ${b.vet_notes}<br>
+          <strong>💊 Medicine:</strong> ${b.medicine||'Not prescribed'}
+        </div>` : `<div style="font-size:.8rem;color:#999;margin-top:.4rem;">Awaiting vet response...</div>`}
+      </div>
+    `).join('');
+  } catch(e){
+    el.innerHTML='<p style="color:gray;">Could not load appointments.</p>';
+  }
+}
+
+loadMyVetAppts();
+
+</script>
+</body>
+</html>

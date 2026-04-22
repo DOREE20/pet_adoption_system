@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Shopping – PawHome</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="home.html" class="brand">🐾 PawHome</a>
+  <a href="home.html">Home</a>
+  <a href="catalogue.html">Catalogue</a>
+  <a href="shopping.html" class="active">Shopping</a>
+  <a href="playtime.html">Playtime</a>
+  <a href="pest.html">Pest Control</a>
+  <a href="vet.html">Vet</a>
+  <a href="feedback.html">Feedback</a>
+  <a href="register.html" id="navRegister">Register</a>
+  <a href="login.html" id="navLogin">Login</a>
+  <span class="welcome-msg hidden" id="welcome-msg"></span>
+  <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div class="section-wrap">
+  <h1 class="section-title">🛒 Pet Shopping</h1>
+  <p class="section-sub">Choose your pet type and breed. Submit a request — our team will confirm.</p>
+
+  <div id="step1">
+    <h3 style="margin-bottom:1rem;">Step 1 — Choose Pet Type</h3>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;max-width:900px;">
+      <div class="pet-type-card" onclick="selectPetType('dog','Dog')">🐶<div class="pt-label">Dog</div></div>
+      <div class="pet-type-card" onclick="selectPetType('cat','Cat')">🐱<div class="pt-label">Cat</div></div>
+      <div class="pet-type-card" onclick="selectPetType('rabbit','Rabbit')">🐰<div class="pt-label">Rabbit</div></div>
+      <div class="pet-type-card" onclick="selectPetType('bird','Bird')">🦜<div class="pt-label">Bird</div></div>
+      <div class="pet-type-card" onclick="selectPetType('fish','Fish')">🐟<div class="pt-label">Fish</div></div>
+    </div>
+  </div>
+
+  <div id="step2" class="hidden" style="margin-top:2rem;">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+      <button class="btn btn-outline" onclick="goBack()">← Back</button>
+      <h3 id="step2-title" style="margin:0;">Choose Breed</h3>
+    </div>
+    <div class="shop-grid" id="breedGrid"></div>
+  </div>
+</div>
+
+<style>
+.pet-type-card{background:white;border-radius:12px;padding:1.5rem;text-align:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.06);font-size:2rem;transition:0.2s;}
+.pet-type-card:hover{transform:translateY(-4px);box-shadow:0 6px 20px rgba(0,0,0,0.12);}
+.pt-label{font-size:1rem;font-weight:600;color:darkgreen;margin-top:0.5rem;}
+</style>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+initNavbar();
+
+const breeds = {
+  dog: [{name:'Labrador',desc:'Friendly and loyal'},{name:'Golden Retriever',desc:'Playful and loving'},{name:'German Shepherd',desc:'Smart and protective'},{name:'Beagle',desc:'Curious and active'}],
+  cat: [{name:'Persian',desc:'Calm indoor pet'},{name:'Siamese',desc:'Social and vocal'},{name:'Tabby',desc:'Easygoing and friendly'},{name:'British Shorthair',desc:'Quiet and relaxed'}],
+  rabbit:[{name:'White Rabbit',desc:'Gentle and calm'},{name:'Dutch Rabbit',desc:'Playful and active'},{name:'Lionhead Rabbit',desc:'Fluffy and cute'},{name:'Mini Lop',desc:'Friendly small breed'}],
+  bird: [{name:'Budgerigar',desc:'Talkative and small'},{name:'Cockatiel',desc:'Friendly and musical'},{name:'Parrot',desc:'Intelligent and social'},{name:'Lovebird',desc:'Colorful and energetic'}],
+  fish: [{name:'Goldfish',desc:'Easy to maintain'},{name:'Betta Fish',desc:'Bright and solo'},{name:'Guppy',desc:'Small and colorful'},{name:'Angelfish',desc:'Elegant aquarium fish'}]
+};
+
+let currentType='', currentTypeLabel='';
+
+function selectPetType(type,label){
+  const user=getUser();
+  if(!user){ showToast('Please login first'); setTimeout(()=>window.location.href='login.html',1200); return; }
+
+  currentType=type; currentTypeLabel=label;
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('step2').classList.remove('hidden');
+  document.getElementById('step2-title').textContent=`Choose ${label} Breed`;
+
+  const grid=document.getElementById('breedGrid');
+  grid.innerHTML=(breeds[type]||[]).map(b=>`
+    <div class="product-card">
+      <div class="product-card-body">
+        <h4>${b.name}</h4>
+        <p style="color:gray;margin-bottom:1rem;">${b.desc}</p>
+        <button class="btn btn-primary" onclick="addToCart('${b.name}','${label}')">🛒 Request</button>
+      </div>
+    </div>`).join('');
+}
+
+function goBack(){
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('step1').classList.remove('hidden');
+}
+
+async function addToCart(name,type){
+  const user=getUser();
+  if(!user){ showToast('Please login first'); return; }
+
+  const data = await apiFetch('shopping_booking',{user_id:user.id,pet_name:name,pet_type:type});
+  if(data.success){
+    showToast(`✅ ${name} request sent! Team will confirm.`);
+  } else {
+    showToast('Request failed. Try again.');
+  }
+}
+</script>
+</body>
+</html>

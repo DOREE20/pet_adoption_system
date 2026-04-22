@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue – PawHome</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.filter-item{cursor:pointer;margin:10px 0;padding:10px;border-radius:8px;background:white;transition:.2s;font-weight:500;}
+.filter-item:hover{background:#e8f5e8;}
+.filter-item.active{background:darkgreen;color:white;}
+.pet-card{border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.1);transition:.3s;}
+.pet-card:hover{transform:translateY(-5px);box-shadow:0 8px 25px rgba(0,0,0,.15);}
+.pet-card img{width:100%;height:220px;object-fit:cover;}
+.pet-card-body{padding:1.2rem;}
+.pet-name{font-size:1.2rem;color:darkgreen;margin-bottom:.4rem;font-weight:700;}
+.pet-details{line-height:1.7;color:#555;font-size:.9rem;}
+.offer-badge{display:inline-block;background:lightgreen;padding:3px 12px;border-radius:20px;font-weight:600;color:darkgreen;margin:.4rem 0;font-size:.85rem;}
+.pet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.loader{text-align:center;padding:3rem;color:gray;font-size:1rem;}
+.sidebar{width:220px;background:lightblue;padding:1rem;min-height:80vh;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="home.html" class="brand">🐾 PawHome</a>
+  <a href="home.html">Home</a>
+  <a href="register.html" id="navRegister">Register</a>
+  <a href="login.html" id="nav-login">Login</a>
+  <a href="catalogue.html" class="active">Catalogue</a>
+  <a href="shopping.html">Shopping</a>
+  <a href="playtime.html">Playtime</a>
+  <a href="pest.html">Pest Control</a>
+  <a href="vet.html">Vet</a>
+  <a href="feedback.html">Feedback</a>
+  <span class="welcome-msg hidden" id="welcome-msg"></span>
+  <a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+  <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div style="display:flex;gap:1.5rem;padding:1.5rem;max-width:1300px;margin:auto;">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h3 style="margin-bottom:1rem;color:darkgreen;">🐾 Browse Pets</h3>
+    <div class="filter-item active" onclick="showType('home',this)">🏠 Home</div>
+    <div class="filter-item"       onclick="showType('dog',this)">🐶 Dogs</div>
+    <div class="filter-item"       onclick="showType('cat',this)">🐱 Cats</div>
+    <div class="filter-item"       onclick="showType('rabbit',this)">🐰 Rabbits</div>
+    <div class="filter-item"       onclick="showType('bird',this)">🦜 Birds</div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div style="flex:1;">
+
+    <!-- HOME PAGE -->
+    <div id="homePage">
+      <h1 style="color:darkgreen;margin-bottom:.5rem;">Welcome to our Catalogue 🐾</h1>
+      <p style="color:gray;font-size:1.1rem;margin-bottom:2rem;">Choose a pet type from the sidebar to explore. Every pet has full details!</p>
+      <div style="background:white;border-radius:12px;padding:2rem;box-shadow:var(--card-shadow);">
+        <h2 style="color:darkblue;">All Pets in Our Database</h2>
+        <p style="color:gray;margin-bottom:1rem;">Click any category on the left to filter.</p>
+        <div id="allPetsGrid" class="pet-grid"><div class="loader">Loading all pets from database…</div></div>
+      </div>
+    </div>
+
+    <!-- FILTERED PETS PAGE -->
+    <div id="filteredPage" class="hidden">
+      <h2 id="filterTitle" style="color:darkgreen;margin-bottom:1.2rem;"></h2>
+      <div id="filteredGrid" class="pet-grid"><div class="loader">Loading…</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+
+initNavbar();
+
+const iconMap = { dog:'🐶', cat:'🐱', rabbit:'🐰', bird:'🦜' };
+
+function petCard(pet, icon){
+  const ic = icon || iconMap[pet.type] || '🐾';
+  return `
+  <div class="pet-card">
+    <img src="${pet.img_url}" alt="${pet.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x220?text=No+Image'">
+    <div class="pet-card-body">
+      <div class="pet-name">${ic} ${pet.name}</div>
+      <div class="pet-details">
+        <p>${pet.description||''}</p>
+        ${pet.offer?`<div class="offer-badge">🎁 ${pet.offer}</div>`:''}
+        <p><strong>Food:</strong> ${pet.food||'–'}</p>
+        <p><strong>Allergy:</strong> ${pet.allergy||'–'}</p>
+        <p><strong>Expert:</strong> 📞 ${pet.expert_phone||'–'}</p>
+        ${pet.video_url?`<a href="${pet.video_url}" target="_blank" style="margin-top:6px;display:inline-flex;align-items:center;gap:4px;color:darkblue;">📺 Watch Video</a>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// Load all pets on home
+async function loadAllPets(){
+  try {
+    const data = await apiFetch('get_pets',{type:'all'},'GET');
+    const el = document.getElementById('allPetsGrid');
+    if(data.success && data.pets.length){
+      el.innerHTML = data.pets.map(p=>petCard(p)).join('');
+    } else {
+      el.innerHTML = '<p style="color:gray;">No pets in database. Run steup_db.php first.</p>';
+    }
+  } catch(e){
+    document.getElementById('allPetsGrid').innerHTML='<p style="color:gray;">Could not load pets – is the server running?</p>';
+  }
+}
+
+loadAllPets();
+
+// Show pets by type
+async function showType(type, clickedEl){
+  // Update active filter
+  document.querySelectorAll('.filter-item').forEach(el=>el.classList.remove('active'));
+  clickedEl.classList.add('active');
+
+  if(type==='home'){
+    document.getElementById('homePage').classList.remove('hidden');
+    document.getElementById('filteredPage').classList.add('hidden');
+    return;
+  }
+
+  document.getElementById('homePage').classList.add('hidden');
+  document.getElementById('filteredPage').classList.remove('hidden');
+
+  const icon = iconMap[type]||'🐾';
+  document.getElementById('filterTitle').textContent = `${icon} ${type.charAt(0).toUpperCase()+type.slice(1)}s`;
+  document.getElementById('filteredGrid').innerHTML = '<div class="loader">Loading…</div>';
+
+  try {
+    const data = await apiFetch('get_pets',{type},'GET');
+    if(data.success && data.pets.length){
+      document.getElementById('filteredGrid').innerHTML = data.pets.map(p=>petCard(p,icon)).join('');
+    } else {
+      document.getElementById('filteredGrid').innerHTML = '<div class="loader">No pets found for this category.</div>';
+    }
+  } catch(e){
+    document.getElementById('filteredGrid').innerHTML='<div class="loader">Error loading pets.</div>';
+  }
+}
+
+</script>
+</body>
+</html>

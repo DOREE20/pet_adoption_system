@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Employee Panel – PawHome</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+/* ── Employee panel styles ── */
+.emp-header{background:linear-gradient(135deg,darkblue,#1a237e);color:white;padding:1.2rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3);}
+.emp-header .brand{font-size:1.4rem;font-weight:800;color:orange;}
+.emp-header .emp-name{font-size:1rem;color:#cfe2ff;}
+.emp-header .btn-logout{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:.4rem 1.2rem;border-radius:8px;cursor:pointer;font-size:.9rem;transition:.2s;}
+.emp-header .btn-logout:hover{background:red;}
+
+.panel-tabs{display:flex;background:white;border-bottom:3px solid #eee;padding:0 2rem;overflow-x:auto;gap:0;}
+.ptab{padding:.9rem 1.4rem;cursor:pointer;font-weight:600;font-size:.95rem;color:gray;border-bottom:3px solid transparent;white-space:nowrap;transition:.2s;}
+.ptab:hover{color:darkblue;}
+.ptab.active{color:darkblue;border-bottom-color:orange;}
+
+.panel-body{padding:2rem;max-width:1200px;margin:auto;}
+
+.appt-card{background:white;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.07);padding:1.3rem 1.5rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1.5rem;transition:.2s;}
+.appt-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.12);}
+.appt-info{flex:1;}
+.appt-user{font-weight:700;color:darkblue;font-size:1rem;}
+.appt-meta{color:#555;font-size:.9rem;margin:.25rem 0;}
+.appt-email{color:gray;font-size:.82rem;}
+.appt-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem;}
+.btn-approve{background:#198754;color:white;border:none;padding:.4rem .9rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85rem;}
+.btn-approve:hover{background:#157347;}
+.btn-reject{background:#dc3545;color:white;border:none;padding:.4rem .9rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85rem;}
+.btn-reject:hover{background:#b02a37;}
+.btn-reschedule{background:#0d6efd;color:white;border:none;padding:.4rem .9rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:.85rem;}
+.btn-reschedule:hover{background:#0b5ed7;}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:16px;padding:2rem;width:100%;max-width:480px;box-shadow:0 8px 40px rgba(0,0,0,.2);}
+.modal h3{margin-bottom:1rem;color:darkblue;}
+.modal label{font-weight:600;font-size:.9rem;display:block;margin:.8rem 0 .3rem;}
+.modal input,.modal textarea,.modal select{width:100%;padding:.6rem;border:1px solid #ccc;border-radius:8px;font-size:.9rem;}
+.modal textarea{resize:vertical;min-height:80px;}
+.modal-btns{display:flex;gap:.8rem;margin-top:1rem;justify-content:flex-end;}
+
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat-card2{background:white;border-radius:12px;padding:1.2rem;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.stat-num{font-size:2rem;font-weight:800;color:darkblue;}
+.stat-lbl{color:gray;font-size:.85rem;margin-top:.3rem;}
+
+.empty-msg{text-align:center;color:gray;padding:3rem;font-size:1rem;}
+.log-table{width:100%;border-collapse:collapse;}
+.log-table th{background:darkblue;color:white;padding:.7rem;text-align:left;}
+.log-table td{padding:.7rem;border-bottom:1px solid #f0f0f0;font-size:.9rem;}
+.log-table tr:hover td{background:#f8f9ff;}
+.section-h{font-size:1.3rem;font-weight:700;color:darkblue;margin-bottom:1rem;}
+.situation-box{background:#f8f9fa;border-left:3px solid orange;padding:.6rem;border-radius:4px;font-size:.85rem;color:#444;margin:.4rem 0;}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="emp-header">
+  <div class="brand">🐾 PawHome — Employee Panel</div>
+  <div>
+    <span class="emp-name" id="empNameDisplay"></span>
+    <button class="btn-logout" onclick="empLogout()">🚪 Logout</button>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="panel-tabs">
+  <div class="ptab active" onclick="showTab('overview')"  id="tab-overview">📊 Overview</div>
+  <div class="ptab"        onclick="showTab('playtime')"  id="tab-playtime">🎾 Playtime</div>
+  <div class="ptab"        onclick="showTab('shopping')"  id="tab-shopping">🛒 Shopping</div>
+  <div class="ptab"        onclick="showTab('pest')"      id="tab-pest">🦟 Pest Control</div>
+  <div class="ptab"        onclick="showTab('vet')"       id="tab-vet">🩺 Vet</div>
+  <div class="ptab"        onclick="showTab('log')"       id="tab-log">📋 My Activity Log</div>
+</div>
+
+<div class="panel-body">
+
+  <!-- OVERVIEW TAB -->
+  <div id="section-overview">
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card2"><div class="stat-num" id="st-play">–</div><div class="stat-lbl">Playtime Requests</div></div>
+      <div class="stat-card2"><div class="stat-num" id="st-shop">–</div><div class="stat-lbl">Shopping Requests</div></div>
+      <div class="stat-card2"><div class="stat-num" id="st-pest">–</div><div class="stat-lbl">Pest Requests</div></div>
+      <div class="stat-card2"><div class="stat-num" id="st-vet">–</div><div class="stat-lbl">Vet Requests</div></div>
+      <div class="stat-card2"><div class="stat-num" id="st-pending" style="color:orange;">–</div><div class="stat-lbl">Total Pending</div></div>
+    </div>
+    <div class="section-h">Recent Pending Requests</div>
+    <div id="overviewPending"></div>
+  </div>
+
+  <!-- PLAYTIME TAB -->
+  <div id="section-playtime" class="hidden">
+    <div class="section-h">🎾 Playtime Bookings</div>
+    <div id="listPlaytime"><div class="empty-msg">Loading...</div></div>
+  </div>
+
+  <!-- SHOPPING TAB -->
+  <div id="section-shopping" class="hidden">
+    <div class="section-h">🛒 Shopping Requests</div>
+    <div id="listShopping"><div class="empty-msg">Loading...</div></div>
+  </div>
+
+  <!-- PEST TAB -->
+  <div id="section-pest" class="hidden">
+    <div class="section-h">🦟 Pest Control Requests</div>
+    <div id="listPest"><div class="empty-msg">Loading...</div></div>
+  </div>
+
+  <!-- VET TAB -->
+  <div id="section-vet" class="hidden">
+    <div class="section-h">🩺 Vet Appointment Requests</div>
+    <div id="listVet"><div class="empty-msg">Loading...</div></div>
+  </div>
+
+  <!-- ACTIVITY LOG TAB -->
+  <div id="section-log" class="hidden">
+    <div class="section-h">📋 My Activity Log</div>
+    <div id="logTable"><div class="empty-msg">Loading...</div></div>
+  </div>
+
+</div><!-- /panel-body -->
+
+<!-- ── Action Modal ── -->
+<div class="modal-overlay" id="actionModal">
+<div class="modal">
+  <h3 id="modalTitle">Update Appointment</h3>
+  <input type="hidden" id="modalType"/>
+  <input type="hidden" id="modalId"/>
+  <input type="hidden" id="modalAction"/>
+
+  <div id="rescheduleField" class="hidden">
+    <label>New Date</label>
+    <input type="date" id="modalNewDate"/>
+  </div>
+
+  <div id="vetFields" class="hidden">
+    <label>Vet Notes / Diagnosis</label>
+    <textarea id="modalVetNotes" placeholder="Describe treatment plan..."></textarea>
+    <label>Prescribed Medicine</label>
+    <input type="text" id="modalMedicine" placeholder="e.g. Amoxicillin 250mg twice daily"/>
+  </div>
+
+  <label>Notes (optional)</label>
+  <textarea id="modalNotes" placeholder="Add a note for the user..."></textarea>
+
+  <div class="modal-btns">
+    <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="confirmAction()" id="modalConfirmBtn">Confirm</button>
+  </div>
+</div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+
+let allData = { playtime:[], shopping:[], pest:[], vet:[] };
+let currentEmployee = null;
+
+// ── Auth check ────────────────────────────────────────────────────────────────
+async function checkEmpAuth(){
+  // Try PHP session first
+  try {
+    const res = await apiFetch('check_emp_session',{},'GET');
+    if(res.success){
+      currentEmployee = res.employee;
+      setEmployee(res.employee);
+      document.getElementById('empNameDisplay').textContent = `👤 ${res.employee.name}`;
+      loadAllData();
+      return;
+    }
+  } catch(e){}
+
+  // Fall back to localStorage/cookie
+  const emp = getEmployee();
+  if(emp){
+    currentEmployee = emp;
+    document.getElementById('empNameDisplay').textContent = `👤 ${emp.name}`;
+    loadAllData();
+    return;
+  }
+
+  // Not authenticated
+  showToast('Please login as employee first');
+  setTimeout(()=> window.location.href='login.html', 1500);
+}
+
+checkEmpAuth();
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function showTab(name){
+  ['overview','playtime','shopping','pest','vet','log'].forEach(t=>{
+    document.getElementById('section-'+t).classList.toggle('hidden', t!==name);
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+  });
+  if(name==='log') loadLog();
+}
+
+// ── Load all appointment data ─────────────────────────────────────────────────
+async function loadAllData(){
+  try {
+    const data = await apiFetch('get_all_appts',{},'GET');
+    if(!data.success){ showToast('Failed to load data'); return; }
+    allData = data;
+
+    document.getElementById('st-play').textContent = data.playtime.length;
+    document.getElementById('st-shop').textContent = data.shopping.length;
+    document.getElementById('st-pest').textContent = data.pest.length;
+    document.getElementById('st-vet').textContent  = data.vet.length;
+
+    const pendingCount = [...data.playtime,...data.shopping,...data.pest,...data.vet]
+      .filter(x=>x.status==='pending').length;
+    document.getElementById('st-pending').textContent = pendingCount;
+
+    renderOverview();
+    renderPlaytime();
+    renderShopping();
+    renderPest();
+    renderVet();
+  } catch(e){
+    showToast('Error: ' + e.message);
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function actionBtns(type, id, status, extra=''){
+  if(status !== 'pending' && status !== 'rescheduled'){
+    return `<span style="color:gray;font-size:.85rem;">Already ${status}</span>`;
+  }
+  return `
+    <button class="btn-approve"     onclick="openModal('${type}','${id}','approved')">✅ Approve</button>
+    <button class="btn-reject"      onclick="openModal('${type}','${id}','rejected')">❌ Reject</button>
+    <button class="btn-reschedule"  onclick="openModal('${type}','${id}','rescheduled')">📅 Reschedule</button>
+    ${extra}
+  `;
+}
+
+function vetActionBtns(id, status){
+  if(status !== 'pending'){
+    return `<span style="color:gray;font-size:.85rem;">Already ${status}</span>`;
+  }
+  return `
+    <button class="btn-approve"    onclick="openModal('vet','${id}','approved')">✅ Approve + Notes</button>
+    <button class="btn-reject"     onclick="openModal('vet','${id}','rejected')">❌ Reject</button>
+    <button class="btn-reschedule" onclick="openModal('vet','${id}','rescheduled')">📅 Reschedule</button>
+  `;
+}
+
+// ── Render sections ───────────────────────────────────────────────────────────
+function renderOverview(){
+  const pending = [...allData.playtime,...allData.shopping,...allData.pest,...allData.vet]
+    .filter(x=>x.status==='pending').slice(0,8);
+  if(!pending.length){
+    document.getElementById('overviewPending').innerHTML='<div class="empty-msg">🎉 No pending requests!</div>';
+    return;
+  }
+  document.getElementById('overviewPending').innerHTML = pending.map(item=>{
+    let type='', detail='';
+    if(item.slot){type='playtime'; detail=`${item.date} – ${item.slot} (${item.pet_type})`;}
+    else if(item.pet_name && item.situation===undefined){type='shopping'; detail=`${item.pet_name} – ${item.date}`;}
+    else if(item.pests){type='pest'; detail=`${item.pests} – ${item.date}`;}
+    else {type='vet'; detail=`${item.pet_name} (${item.pet_type}) – ${item.date}`;}
+    return `
+    <div class="appt-card">
+      <div class="appt-info">
+        <div class="appt-user">${item.first_name||''} ${item.last_name||''}</div>
+        <div class="appt-meta">📌 ${type.toUpperCase()} — ${detail}</div>
+        <div class="appt-email">${item.email||''}</div>
+        <div class="appt-actions">${actionBtns(type,item.id,item.status)}</div>
+      </div>
+      <div>${statusBadge(item.status)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPlaytime(){
+  const el=document.getElementById('listPlaytime');
+  if(!allData.playtime.length){el.innerHTML='<div class="empty-msg">No playtime requests.</div>';return;}
+  el.innerHTML=allData.playtime.map(p=>`
+    <div class="appt-card">
+      <div class="appt-info">
+        <div class="appt-user">${p.first_name} ${p.last_name}</div>
+        <div class="appt-meta">📅 ${p.date} &nbsp;|&nbsp; ⏰ ${p.slot} &nbsp;|&nbsp; 🐾 ${p.pet_type} &nbsp;|&nbsp; 👥 ${p.people} people</div>
+        <div class="appt-email">✉️ ${p.email}</div>
+        <div class="appt-meta" style="font-size:.8rem;color:#aaa;">Booked: ${p.created_at}</div>
+        <div class="appt-actions">${actionBtns('playtime',p.id,p.status)}</div>
+      </div>
+      <div>${statusBadge(p.status)}</div>
+    </div>`).join('');
+}
+
+function renderShopping(){
+  const el=document.getElementById('listShopping');
+  if(!allData.shopping.length){el.innerHTML='<div class="empty-msg">No shopping requests.</div>';return;}
+  el.innerHTML=allData.shopping.map(s=>`
+    <div class="appt-card">
+      <div class="appt-info">
+        <div class="appt-user">${s.first_name} ${s.last_name}</div>
+        <div class="appt-meta">🐾 Pet: <b>${s.pet_name}</b> &nbsp;|&nbsp; 📅 ${s.date}</div>
+        <div class="appt-email">✉️ ${s.email}</div>
+        <div class="appt-meta" style="font-size:.8rem;color:#aaa;">Requested: ${s.created_at}</div>
+        <div class="appt-actions">${actionBtns('shopping',s.id,s.status)}</div>
+      </div>
+      <div>${statusBadge(s.status)}</div>
+    </div>`).join('');
+}
+
+function renderPest(){
+  const el=document.getElementById('listPest');
+  if(!allData.pest.length){el.innerHTML='<div class="empty-msg">No pest control requests.</div>';return;}
+  el.innerHTML=allData.pest.map(p=>`
+    <div class="appt-card">
+      <div class="appt-info">
+        <div class="appt-user">${p.first_name||'Guest'} ${p.last_name||''}</div>
+        <div class="appt-meta">📍 ${p.flat_no}, ${p.building}, ${p.city} – ${p.pincode}</div>
+        <div class="appt-meta">🦟 Pests: <b>${p.pests}</b> &nbsp;|&nbsp; 📅 ${p.date} &nbsp;|&nbsp; ⏰ ${p.time_slot}</div>
+        <div class="appt-email">✉️ ${p.email||'N/A'}</div>
+        <div class="appt-meta" style="font-size:.8rem;color:#aaa;">Requested: ${p.created_at}</div>
+        <div class="appt-actions">${actionBtns('pest',p.id,p.status)}</div>
+      </div>
+      <div>${statusBadge(p.status)}</div>
+    </div>`).join('');
+}
+
+function renderVet(){
+  const el=document.getElementById('listVet');
+  if(!allData.vet.length){el.innerHTML='<div class="empty-msg">No vet requests.</div>';return;}
+  el.innerHTML=allData.vet.map(v=>`
+    <div class="appt-card">
+      <div class="appt-info">
+        <div class="appt-user">${v.first_name} ${v.last_name}</div>
+        <div class="appt-meta">🐾 Pet: <b>${v.pet_name}</b> (${v.pet_type}) &nbsp;|&nbsp; 📅 ${v.date} &nbsp;|&nbsp; ⏰ ${v.time_slot}</div>
+        <div class="situation-box">💬 <b>Situation:</b> ${v.situation}</div>
+        ${v.vet_notes?`<div class="situation-box" style="border-color:green;">📝 <b>Vet Notes:</b> ${v.vet_notes}<br>💊 <b>Medicine:</b> ${v.medicine}</div>`:''}
+        <div class="appt-email">✉️ ${v.email}</div>
+        <div class="appt-meta" style="font-size:.8rem;color:#aaa;">Requested: ${v.created_at}</div>
+        <div class="appt-actions">${vetActionBtns(v.id,v.status)}</div>
+      </div>
+      <div>${statusBadge(v.status)}</div>
+    </div>`).join('');
+}
+
+// ── Activity log ──────────────────────────────────────────────────────────────
+async function loadLog(){
+  const el=document.getElementById('logTable');
+  el.innerHTML='<div class="empty-msg">Loading...</div>';
+  try {
+    const data=await apiFetch('get_employee_actions',{},'GET');
+    if(!data.success||!data.actions.length){
+      el.innerHTML='<div class="empty-msg">No actions logged yet.</div>';
+      return;
+    }
+    el.innerHTML=`
+    <table class="log-table">
+      <thead><tr><th>#</th><th>Action</th><th>Type</th><th>User</th><th>Notes</th><th>Rescheduled To</th><th>Timestamp</th></tr></thead>
+      <tbody>${data.actions.map((a,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${statusBadge(a.action_type)}</td>
+          <td>${a.appointment_type.toUpperCase()}</td>
+          <td>${a.user_name||'–'}</td>
+          <td style="max-width:200px;font-size:.82rem;">${a.notes||'–'}</td>
+          <td>${a.new_date||'–'}</td>
+          <td style="font-size:.8rem;">${a.created_at}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch(e){
+    el.innerHTML='<div class="empty-msg">Could not load log.</div>';
+  }
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function openModal(type, id, action){
+  document.getElementById('modalType').value   = type;
+  document.getElementById('modalId').value     = id;
+  document.getElementById('modalAction').value = action;
+  document.getElementById('modalNotes').value  = '';
+  document.getElementById('modalNewDate').value= '';
+  document.getElementById('modalVetNotes').value='';
+  document.getElementById('modalMedicine').value='';
+
+  const titleMap = {approved:'✅ Approve Appointment',rejected:'❌ Reject Appointment',rescheduled:'📅 Reschedule Appointment'};
+  document.getElementById('modalTitle').textContent = titleMap[action]||'Update';
+
+  document.getElementById('rescheduleField').classList.toggle('hidden', action!=='rescheduled');
+  document.getElementById('vetFields').classList.toggle('hidden', !(type==='vet' && action==='approved'));
+
+  const btnColors = {approved:'#198754',rejected:'#dc3545',rescheduled:'#0d6efd'};
+  document.getElementById('modalConfirmBtn').style.background = btnColors[action]||'darkblue';
+
+  document.getElementById('actionModal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('actionModal').classList.remove('open');
+}
+
+async function confirmAction(){
+  const type    = document.getElementById('modalType').value;
+  const id      = document.getElementById('modalId').value;
+  const action  = document.getElementById('modalAction').value;
+  const notes   = document.getElementById('modalNotes').value;
+  const ndate   = document.getElementById('modalNewDate').value;
+  const vnotes  = document.getElementById('modalVetNotes').value;
+  const medicine= document.getElementById('modalMedicine').value;
+  const btn     = document.getElementById('modalConfirmBtn');
+
+  if(action==='rescheduled'&&!ndate){showToast('Select a new date');return;}
+  if(type==='vet'&&action==='approved'&&!vnotes){showToast('Please add vet notes');return;}
+
+  btn.textContent='Saving...'; btn.disabled=true;
+
+  try {
+    const payload={type,id,status:action,notes,new_date:ndate,vet_notes:vnotes,medicine};
+    if(currentEmployee){
+      payload.emp_id   = currentEmployee.id;
+      payload.emp_name = currentEmployee.name;
+    }
+    const data=await apiFetch('update_appt',payload);
+    if(data.success){
+      showToast('Status updated successfully!');
+      closeModal();
+      loadAllData();
+    } else {
+      showToast('Update failed – check server');
+    }
+  } catch(e){
+    showToast('Error: '+e.message);
+  }
+  btn.textContent='Confirm'; btn.disabled=false;
+}
+
+// Close modal on overlay click
+document.getElementById('actionModal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+</script>
+</body>
+</html>

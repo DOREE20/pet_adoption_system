@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login – PawHome</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+/* Tab switcher */
+.login-tabs{display:flex;gap:0;margin-bottom:1.5rem;border-radius:10px;overflow:hidden;border:2px solid darkblue;}
+.login-tab{flex:1;padding:.75rem;text-align:center;cursor:pointer;font-weight:600;font-size:.95rem;background:white;color:darkblue;transition:.2s;}
+.login-tab.active{background:darkblue;color:white;}
+.login-tab:hover:not(.active){background:#eef;}
+
+/* Step boxes for employee */
+.step-box{background:#f0f4ff;border:1px solid #c0ccee;border-radius:8px;padding:1rem;margin-bottom:1rem;}
+.step-label{font-size:.75rem;font-weight:700;color:darkblue;letter-spacing:.05em;margin-bottom:.4rem;}
+.emp-hint{font-size:.82rem;color:#666;margin-top:.4rem;}
+.master-locked{opacity:.5;pointer-events:none;}
+</style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="home.html" class="brand">🐾 PawHome</a>
+  <a href="home.html">Home</a>
+  <a href="catalogue.html">Catalogue</a>
+  <a href="shopping.html">Shopping</a>
+  <a href="playtime.html">Playtime</a>
+  <a href="pest.html">Pest Control</a>
+  <a href="vet.html">Vet</a>
+  <a href="feedback.html">Feedback</a>
+  <a href="register.html" id="navRegister">Register</a>
+  <a href="login.html" class="active" id="nav-login">Login</a>
+  <span class="welcome-msg hidden" id="welcome-msg"></span>
+  <a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+  <a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div class="form-page" style="display:flex;align-items:center;min-height:calc(100vh - 60px);">
+<div class="form-card" style="width:100%;">
+
+  <div style="text-align:center;margin-bottom:1.5rem;">
+    <div style="font-size:3rem;">🐾</div>
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Login to continue your PawHome journey</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="login-tabs">
+    <div class="login-tab active" id="tab-user"   onclick="switchTab('user')">👤 User Login</div>
+    <div class="login-tab"        id="tab-employee" onclick="switchTab('employee')">🏢 Employee Login</div>
+  </div>
+
+  <div id="form-alert"   class="alert alert-error   hidden"></div>
+  <div id="form-success" class="alert alert-success hidden"></div>
+
+  <!-- ══════════ USER LOGIN FORM ══════════ -->
+  <div id="userLoginSection">
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="your@email.com"/>
+        <div class="field-error" id="err-email">Enter a valid email</div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" placeholder="Your password"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('password')">Show</button>
+        </div>
+        <div class="field-error" id="err-password">Password is required</div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full mt-2">Login</button>
+      <div style="text-align:center;margin-top:1rem;">
+        No account? <a href="register.html">Register here</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- ══════════ EMPLOYEE LOGIN FORM ══════════ -->
+  <div id="empLoginSection" class="hidden">
+
+    <div class="step-box">
+      <div class="step-label">STEP 1 — MASTER PASSWORD</div>
+      <div class="form-group" style="margin:0;">
+        <div class="pw-wrap">
+          <input type="password" id="masterPw" placeholder="Enter master password"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('masterPw')">Show</button>
+        </div>
+      </div>
+      <div class="emp-hint">🔑 All employees share one master password provided by admin.</div>
+      <button type="button" class="btn btn-primary" style="margin-top:.8rem;width:100%;" onclick="verifyMaster()">Verify →</button>
+    </div>
+
+    <div class="step-box master-locked" id="empStep2">
+      <div class="step-label">STEP 2 — EMPLOYEE CREDENTIALS</div>
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="empName" placeholder="e.g. Rahul"/>
+        <div class="field-error" id="err-empName">Enter your name</div>
+      </div>
+      <div class="form-group">
+        <label>Your Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="empPw" placeholder="e.g. Rahul@123"/>
+          <button type="button" class="pw-toggle" onclick="togglePw('empPw')">Show</button>
+        </div>
+        <div class="emp-hint">🔒 Format: YourName@123 (e.g. Rahul → Rahul@123)</div>
+        <div class="field-error" id="err-empPw">Enter your password</div>
+      </div>
+      <button type="button" class="btn btn-primary btn-full" onclick="empLogin()">Login as Employee</button>
+    </div>
+
+  </div>
+
+  <!-- USER DASHBOARD (shown after login) -->
+  <div id="userDashboard" class="hidden" style="margin-top:2rem;border-top:2px solid #eee;padding-top:1.5rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:1.2rem;">
+      <h2 style="margin:0;color:darkblue;">📋 Your Dashboard</h2>
+      <a href="home.html" class="btn btn-primary" style="font-size:.9rem;padding:.5rem 1.4rem;">🏠 Go to Home</a>
+    </div>
+    <h3 style="margin-bottom:.5rem;">Your Details</h3>
+    <div class="table-wrap">
+      <table><tbody id="userDetails"></tbody></table>
+    </div>
+    <h3 style="margin:1.5rem 0 .8rem;">Recent Booking Activity</h3>
+    <p style="font-size:.85rem;color:gray;margin-bottom:.8rem;">Showing your latest requests across all services.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Details</th><th>Status</th></tr></thead>
+        <tbody id="userActivity"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:1.5rem;">
+      <p style="font-weight:600;margin-bottom:.8rem;color:#333;">Quick Links</p>
+      <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
+        <a href="shopping.html" class="btn btn-primary">🛒 Shopping</a>
+        <a href="playtime.html" class="btn btn-primary">🎾 Playtime</a>
+        <a href="pest.html"     class="btn btn-primary">🦟 Pest Control</a>
+        <a href="vet.html"      class="btn btn-primary">🩺 Vet</a>
+        <a href="home.html"     class="btn btn-outline">🏠 Home</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+
+initNavbar();
+
+// ─── Tab switch ──────────────────────────────────────────────────────────────
+function switchTab(tab){
+  document.getElementById('tab-user').classList.toggle('active', tab==='user');
+  document.getElementById('tab-employee').classList.toggle('active', tab==='employee');
+  document.getElementById('userLoginSection').classList.toggle('hidden', tab!=='user');
+  document.getElementById('empLoginSection').classList.toggle('hidden', tab!=='employee');
+  clearAlerts();
+}
+
+function clearAlerts(){
+  document.getElementById('form-alert').classList.add('hidden');
+  document.getElementById('form-success').classList.add('hidden');
+}
+
+// ─── User login ──────────────────────────────────────────────────────────────
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  clearAlerts();
+
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const alertEl  = document.getElementById('form-alert');
+  let valid = true;
+
+  if(!email)    { document.getElementById('err-email').classList.add('show');    valid=false; }
+  if(!password) { document.getElementById('err-password').classList.add('show'); valid=false; }
+  if(!valid) return;
+
+  try {
+    const data = await apiFetch('login', { email, password });
+    if(data.success){
+      setUser(data.user);
+      document.getElementById('form-success').textContent = `Welcome back, ${data.user.firstName}! ✅ Scroll down to see your bookings & activity.`;
+      document.getElementById('form-success').classList.remove('hidden');
+      checkLoginStatus();
+      loadUserDashboard();
+      // Smoothly scroll down to dashboard after a moment
+      setTimeout(()=>{
+        document.getElementById('userDashboard').scrollIntoView({behavior:'smooth', block:'start'});
+      }, 600);
+    } else {
+      alertEl.textContent = data.msg || 'Invalid email or password';
+      alertEl.classList.remove('hidden');
+    }
+  } catch {
+    document.getElementById('form-alert').textContent = 'Network error. Is the server running?';
+    document.getElementById('form-alert').classList.remove('hidden');
+  }
+});
+
+// ─── Employee – step 1: verify master password ───────────────────────────────
+let masterVerified = false;
+function verifyMaster(){
+  const mp = document.getElementById('masterPw').value;
+  if(!mp){ showToast('Enter master password'); return; }
+  // Client-side hint only; real check is server-side
+  document.getElementById('empStep2').classList.remove('master-locked');
+  masterVerified = true;
+  showToast('Master password accepted. Enter your credentials.');
+}
+
+// ─── Employee – step 2: full login ───────────────────────────────────────────
+async function empLogin(){
+  clearAlerts();
+  if(!masterVerified){ showToast('Verify master password first'); return; }
+
+  const master = document.getElementById('masterPw').value;
+  const name   = document.getElementById('empName').value.trim();
+  const pw     = document.getElementById('empPw').value;
+  const alertEl= document.getElementById('form-alert');
+  let valid = true;
+
+  if(!name) { document.getElementById('err-empName').classList.add('show'); valid=false; }
+  if(!pw)   { document.getElementById('err-empPw').classList.add('show');   valid=false; }
+  if(!valid) return;
+
+  try {
+    const data = await apiFetch('emp_login',{ master_pw:master, emp_name:name, emp_pw:pw });
+    if(data.success){
+      setEmployee(data.employee);
+      document.getElementById('form-success').textContent = `Employee login successful! Welcome, ${data.employee.name}`;
+      document.getElementById('form-success').classList.remove('hidden');
+      setTimeout(()=> window.location.href='employee.html', 1200);
+    } else {
+      alertEl.textContent = data.msg || 'Invalid employee credentials';
+      alertEl.classList.remove('hidden');
+    }
+  } catch {
+    document.getElementById('form-alert').textContent = 'Network error';
+    document.getElementById('form-alert').classList.remove('hidden');
+  }
+}
+
+// ─── Load user dashboard after login ─────────────────────────────────────────
+async function loadUserDashboard(){
+  const user = getUser();
+  if(!user) return;
+
+  document.getElementById('userDashboard').classList.remove('hidden');
+  document.getElementById('userDetails').innerHTML=`
+    <tr><td><b>Name</b></td><td>${user.firstName} ${user.lastName}</td></tr>
+    <tr><td><b>Email</b></td><td>${user.email}</td></tr>
+    <tr><td><b>City</b></td><td>${user.city||''}</td></tr>
+  `;
+
+  try {
+    const data = await apiFetch('get_user_data',{user_id:user.id},'GET');
+    let rows='';
+    (data.shopping||[]).forEach(o=>{
+      rows+=`<tr><td>🛒 Shopping</td><td>${o.pet_name} – ${o.date}</td><td>${statusBadge(o.status)}</td></tr>`;
+    });
+    (data.playtime||[]).forEach(p=>{
+      rows+=`<tr><td>🎾 Playtime</td><td>${p.date} (${p.slot})</td><td>${statusBadge(p.status)}</td></tr>`;
+    });
+    (data.pest||[]).forEach(p=>{
+      rows+=`<tr><td>🦟 Pest</td><td>${p.pests} – ${p.date}</td><td>${statusBadge(p.status)}</td></tr>`;
+    });
+    (data.vet||[]).forEach(v=>{
+      rows+=`<tr><td>🩺 Vet</td><td>${v.pet_name} (${v.pet_type}) – ${v.date}</td><td>${statusBadge(v.status)}</td></tr>`;
+    });
+    document.getElementById('userActivity').innerHTML=rows||`<tr><td colspan="3" style="text-align:center;color:gray;">No activity yet</td></tr>`;
+  } catch {
+    document.getElementById('userActivity').innerHTML=`<tr><td colspan="3">Could not load data — is the server running?</td></tr>`;
+  }
+}
+
+// Auto-load dashboard if already logged in
+const existing = getUser();
+if(existing) loadUserDashboard();
+
+// Clear field errors on input
+['email','password'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',()=>{
+    el.classList.remove('error');
+    const err=document.getElementById('err-'+id);
+    if(err) err.classList.remove('show');
+  });
+});
+
+</script>
+</body>
+</html>

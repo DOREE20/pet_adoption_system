@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Playtime PawsHome</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar" id="navbar">
+<a href="home.html" class="brand">PawsHome</a>
+<a href="home.html">Home</a>
+<a href="register.html">Register</a>
+<a href="login.html" id="nav-login">Login</a>
+<a href="catalogue.html">Catalogue</a>
+<a href="feedback.html">Feedback</a>
+<span class="welcome-msg hidden" id="welcome-msg"></span>
+<a href="dashboard.html" class="hidden" id="nav-dashboard">Dashboard</a>
+<a href="#" class="btn-logout hidden" id="btn-logout" onclick="logout()">Logout</a>
+</nav>
+
+<div class="section-wrap">
+
+<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem;margin-bottom:2rem;height:220px">
+<img src="https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?w=800&auto=format&fit=crop" style="width:100%;height:100%;object-fit:cover">
+<img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&auto=format&fit=crop" style="width:100%;height:100%;object-fit:cover">
+<img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&auto=format&fit=crop" style="width:100%;height:100%;object-fit:cover">
+</div>
+
+<h1 class="section-title">Pet Playtime</h1>
+<p class="section-sub">Book a session and enjoy time with pets</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+
+<div>
+<div class="form-card">
+
+<h2>Book Slot</h2>
+
+<div id="form-alert" class="alert alert-error hidden"></div>
+<div id="form-success" class="alert alert-success hidden"></div>
+
+<form id="playForm">
+
+<div class="form-group">
+<label>Date</label>
+<input type="date" id="play-date" onchange="loadSlots()">
+<div class="field-error" id="err-play-date">Required</div>
+</div>
+
+<div class="form-group">
+<label>Pet Type</label>
+<select id="play-pet">
+<option value="">Choose</option>
+<option>Dogs</option>
+<option>Cats</option>
+<option>Rabbits</option>
+<option>Birds</option>
+<option>Mixed</option>
+</select>
+<div class="field-error" id="err-play-pet">Required</div>
+</div>
+
+<div class="form-group">
+<label>People</label>
+<input type="number" id="play-people" min="1" max="10" value="1">
+</div>
+
+<div id="slots-section" class="hidden">
+<div>Available Slots</div>
+<div id="slotsGrid"></div>
+<div class="field-error" id="err-slot">Select slot</div>
+</div>
+
+<button type="submit" class="btn btn-primary btn-full">Confirm</button>
+
+</form>
+</div>
+</div>
+
+<div>
+
+<div style="background:var(--white);padding:1.5rem;margin-bottom:1.5rem">
+<h3>Info</h3>
+<ul style="list-style:none">
+<li>1 hour session</li>
+<li>Safe animals</li>
+<li>Staff support</li>
+<li>Photos allowed</li>
+<li>Free treats</li>
+</ul>
+</div>
+
+<div style="background:var(--white);padding:1.5rem">
+<h3>My Appointments</h3>
+<div id="myAppointments">No data</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+<p>PawsHome All rights reserved</p>
+</footer>
+
+<script src="app.js"></script>
+
+<script>
+initNavbar();
+
+document.getElementById('play-date').min = new Date().toISOString().split('T')[0]
+
+let selectedSlot = null
+
+async function loadSlots() {
+const date = document.getElementById('play-date').value
+if (!date) return
+
+document.getElementById('slots-section').classList.remove('hidden')
+document.getElementById('slotsGrid').innerHTML = 'Loading'
+
+try {
+const res = await fetch(`api.php?action=get_slots&date=${date}`)
+const data = await res.json()
+renderSlots(data.slots || [])
+} catch(e) {
+renderSlots([
+{ time:'10 to 11', booked:0 },
+{ time:'2 to 3', booked:0 }
+])
+}
+}
+
+function renderSlots(slots) {
+selectedSlot = null
+const grid = document.getElementById('slotsGrid')
+
+const display = slots.length >= 2 ? slots.slice(0,2) : [
+{ time:'10 to 11', booked:0 },
+{ time:'2 to 3', booked:0 }
+]
+
+grid.innerHTML = display.map((s,i) => {
+const full = s.booked >= 2
+return `
+<div class="slot-card ${full ? 'booked' : 'available'}" id="slot-${i}" onclick="${full ? '' : `pickSlot(${i},'${s.time}')`}">
+<div>${s.time}</div>
+</div>`
+}).join('')
+}
+
+function pickSlot(i,time) {
+document.querySelectorAll('.slot-card').forEach(c=>c.classList.remove('selected'))
+document.getElementById('slot-'+i).classList.add('selected')
+selectedSlot = time
+document.getElementById('err-slot').classList.remove('show')
+}
+
+document.getElementById('playForm').addEventListener('submit', async function(e){
+e.preventDefault()
+
+const user = JSON.parse(localStorage.getItem('pawsUser') || 'null')
+if (!user) {
+showToast('Login first')
+setTimeout(()=>window.location.href='login.html',1200)
+return
+}
+
+const date = document.getElementById('play-date').value
+const pet = document.getElementById('play-pet').value
+const people = document.getElementById('play-people').value
+
+let valid = true
+if (!date) { document.getElementById('err-play-date').classList.add('show'); valid=false }
+if (!pet) { document.getElementById('err-play-pet').classList.add('show'); valid=false }
+if (!selectedSlot) { document.getElementById('err-slot').classList.add('show'); valid=false }
+if (!valid) return
+
+const fd = new FormData()
+fd.append('action','book_playtime')
+fd.append('user_id',user.id)
+fd.append('date',date)
+fd.append('pet_type',pet)
+fd.append('slot',selectedSlot)
+fd.append('people',people)
+
+try {
+const res = await fetch('api.php',{method:'POST',body:fd})
+const data = await res.json()
+if (data.success) {
+document.getElementById('form-success').textContent = 'Booked'
+document.getElementById('form-success').classList.remove('hidden')
+document.getElementById('playForm').reset()
+document.getElementById('slots-section').classList.add('hidden')
+selectedSlot=null
+loadMyAppointments()
+}
+} catch(err) {
+document.getElementById('form-alert').textContent = 'Error'
+document.getElementById('form-alert').classList.remove('hidden')
+}
+})
+
+async function loadMyAppointments() {
+const user = JSON.parse(localStorage.getItem('pawsUser') || 'null')
+if (!user) return
+
+try {
+const res = await fetch(`api.php?action=my_appointments&user_id=${user.id}`)
+const data = await res.json()
+const appts = data.appointments || []
+const el = document.getElementById('myAppointments')
+
+if (!appts.length) { el.innerHTML='No appointments'; return }
+
+el.innerHTML = appts.map(a=>`
+<div>${a.date} ${a.slot} ${a.pet_type} ${a.people}</div>
+`).join('')
+} catch(e) {
+document.getElementById('myAppointments').innerHTML='No data'
+}
+}
+
+loadMyAppointments()
+</script>
+
+</body>
+</html>
